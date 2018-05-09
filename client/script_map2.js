@@ -1,11 +1,13 @@
 import { Template } from 'meteor/templating';
 // imports html page
 import './page_map2.html';
+// if meteor is running load up the google maps and insert the key 
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});
   });
 }
+// uplods the data 
 Template.map2.helpers({
   exampleMapOptions: function() {
     // Make sure the maps API has loaded
@@ -18,24 +20,16 @@ Template.map2.helpers({
     }
   }
 });
-function getData(){  
-  var x = ""
-  var request = new XMLHttpRequest(); 
-  request.open('GET','https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson',false)
-  // add a timeout so that if it soen't come back after a given amount of time it will fail. 
-  request.onload = function(){
-      x = JSON.parse(request.responseText);
-  }
-  request.send();
-  return x; 
-}
+// a click event to test weather data retrieval is working 
 Template.map2.events({
   'click': function(event){
-      event.preventDefault();
-      var d = getData();
-      alert(d);   
+    event.preventDefault();
+    var data = getData('https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson');
+    console.log(data); 
   }
 })
+// when the map is created draw to map 
+// make sure to use map.instance not just map 
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
@@ -44,27 +38,27 @@ Template.map2.onCreated(function() {
       position: map.options.center,
       map: map.instance
     });
-      // instantiates a map roughely centered in colorado 
-  var uluru = {lat: 39.124884, lng: -105.555755};
-  // var map = new google.maps.Map(document.getElementById('map'), {
-  //   zoom: 4,
-  //   center: uluru,
-  // });   	
-  var poly = new google.maps.Polygon({
-    paths: [
-      {lat: 25.774, lng: -80.190},
-      {lat: 18.466, lng: -66.118},
-      {lat: 32.321, lng: -64.757},
-      {lat: 25.774, lng: -80.190}
-    ],
-    strokeColor: "#000000", 
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor:  "#ffffff", 
-    fillOpacity: 1
+    var results = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
+    var mapOne = new CombinationMap(results, "SUICIDE_ADJRATE");
+    mapOne.map = mapOne.scaleMapFrom1to1000(); 
+    mapOne.map = mapOne.removeOutliers(results, "SUICIDE_ADJRATE");     
+    mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance);
+    var results2 = getData('https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson');
+    mapDot(results2,map.instance);
   });
-  poly.setMap(map.instance);
-
+});
+// returns data from a database
+function getData(url){  
+  var x = ""
+  var request = new XMLHttpRequest(); 
+  request.open('GET',url,false)
+  // add a timeout so that if it soen't come back after a given amount of time it will fail. 
+  request.onload = function(){
+    x = JSON.parse(request.responseText);
+  }
+  request.send();
+  return x; 
+}
   // finds the lowest number of whatevr term you are searching for in a given dataset 
   function findLowest(results, term){
     var lowest = results.features[0].properties[term]; 
@@ -126,19 +120,19 @@ Template.map2.onCreated(function() {
     }
   }
   // maps all of the point coordinates of a given data set 
-  mapDot = function(results, image) {
-      for (var i = 0; i < results.features.length; i++) {
-        var coords = results.features[i].geometry.coordinates;
-        var latLng = new google.maps.LatLng(coords[1],coords[0]);
-        var marker = new google.maps.Marker({
+  mapDot = function(results, mapRef) {
+    for (var i = 0; i < results.features.length; i++) {
+      var coords = results.features[i].geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      var marker = new google.maps.Marker({
         position: latLng,
-        map: map,
-        icon: image
-       });
-      }
+        map: mapRef,
+        //icon: image
+      });
+    }
   }
   // takes a map and displays in on the screen 
-  mapGraph = function(results,scaleTerm) {
+  mapGraph = function(results,scaleTerm,mapRef) {
     for(var i = 0; i < results.features.length; i++){
       var coords = []; 
       // creates polygons
@@ -149,7 +143,6 @@ Template.map2.onCreated(function() {
         var lowest = findLowest(results, scaleTerm);
         var highest = findHighest(results,scaleTerm);
         var color = getColor(results.features[i].properties[scaleTerm],lowest,highest);
-        
         var poly = new google.maps.Polygon({
           paths: coords,
           strokeColor: "#000000", 
@@ -158,7 +151,7 @@ Template.map2.onCreated(function() {
           fillColor:  color, 
           fillOpacity: 1
         });
-        poly.setMap(map);
+        poly.setMap(mapRef);
       } 
       // creates multipolygons 
       if(results.features[i].geometry.type == "MultiPolygon"){
@@ -178,7 +171,7 @@ Template.map2.onCreated(function() {
             fillColor:  color, 
             fillOpacity: 1
           });
-          poly.setMap(map);
+          poly.setMap(mapRef);
         }
       }
     }
@@ -226,7 +219,9 @@ Template.map2.onCreated(function() {
     // scales the map so that every map can be the same size 
     this.scaleMapFrom1to1000 = function(){
       var shiftLeft = findLowest(this.map, this.firstCaller); 
-      for(var i = 0; i < map.features.length; i++) map.features[i].properties[this.firstCaller] = map.features[i].properties[this.firstCaller] - shiftLeft;           
+      for(var i = 0; i < this.map.features.length; i++){
+         this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller] - shiftLeft;
+      }           
       var max = findHighest(this.map, this.firstCaller); 
       var scaleFactor = 100/max;
       for(var i = 0; i < this.map.features.length; i++) this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller]*scaleFactor;
@@ -240,13 +235,47 @@ Template.map2.onCreated(function() {
       for(var j = 0; j < this.map.features.length; j++){
         for(var i = 0; i < otherMap.features.length; i++){
           if(this.map.features[j].properties.COUNTY_NAME == otherMap.features[i].properties.COUNTY_NAME){
-            console.log( i + "" + j + this.map.features[j].properties.COUNTY_NAME + otherMap.features[i].properties.COUNTY_NAME);
-             this.map.features[j].properties[this.firstCaller] = (this.map.features[j].properties[this.firstCaller] + otherMap.features[i].properties[otherCaller])/2;
+            this.map.features[j].properties[this.firstCaller] = (this.map.features[j].properties[this.firstCaller] + otherMap.features[i].properties[otherCaller])/2;
           }
-
         }
       }
       return this.map; 
+    }
+    this.removeOutliers = function(results,keyWord){
+      this.dataList = []; 
+      for(var i = 0; i < results.features.length; i++){
+        this.dataList.push(results.features[i].properties[keyWord])
+      }
+      var newData = this.filterOutlier(this.dataList,"filteredValues");
+      for(var i = 0; i < this.dataList.length; i++){
+        if(this.dataList[i] > this.filterOutlier(this.dataList,0)) this.dataList[i] = this.filterOutlier(this.dataList,0);
+        if(this.dataList[i] < this.filterOutlier(this.dataList,1)) this.dataList[i] = this.filterOutlier(this.dataList,1);              
+      }
+      for(var i = 0; i < results.features.length; i++){
+        results.features[i].properties[keyWord] = this.dataList[i]; 
+      }
+      return results; 
+    }
+    this.filterOutlier = function(someArray,whatToReturn){
+      var values = someArray.concat();
+          // Then sort
+          values.sort( function(a, b) {
+                  return a - b;
+               }); 
+          var q1 = values[Math.floor((values.length / 4))];
+          // Likewise for q3. 
+          var q3 = values[Math.ceil((values.length * (3 / 4)))];
+          var iqr = q3 - q1;
+          // Then find min and max values
+          var maxValue = q3 + iqr*1.5;
+          var minValue = q1 - iqr*1.5;
+          if(whatToReturn == 0) return maxValue; 
+          if(whatToReturn == 1)return minValue; 
+          // // Then filter anything beyond or beneath these values.
+          // var filteredValues = values.filter(function(x) {
+          //     return (x <= maxValue) && (x >= minValue);
+          // });
+          //return filteredValues;
     }
     // some returns to be used in drawings 
     this.returnMap = function(){
@@ -264,26 +293,22 @@ Template.map2.onCreated(function() {
     }
     return hex;
   };
- // var mapOne = new CombinationMap(mortalityRates, "HD_ADJRATE");
- // mapOne.map = mapOne.scaleMapFrom1to1000(); 
-  //asthmaPrevlaceInAdults = makeCencusIntoCounty(asthmaPrevlaceInAdults, "ASTHMA");        
-  //var mapTwo = new CombinationMap(asthma, "ASTHMA_ADJRATE"); 
- // mapTwo.map = mapTwo.scaleMapFrom1to1000();
- // mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
- // mapOne.map = mapOne.scaleMapFrom1to1000(); 
-  //var mapThree = new CombinationMap(mortalityRates, "HD_ADJRATE");
-  //mapThree.map = mapThree.scaleMapFrom1to1000(); 
-  //mapOne.map = mapOne.combineWithOtherMap(mapThree.returnMap(), mapThree.returnCaller()); 
-  //mapOne.map = mapOne.scaleMapFrom1to1000(); 
-  
-  //mapGraph(mapOne.returnMap(),mapOne.returnCaller());
-
-  //mapGraph(heartDisease, "HSR");
- // mapGraph(asthmaPrevlaceInAdults, "ASTHMA");
- // mapGraph(asthma, "ASTHMA_ADJRATE");
- // mapGraph(mortalityRates, "HD_ADJRATE");
- // mapGraph(heartDisease, "HSR");        
- // mapDot(ts, image1);
- //mapDot(behavioralCenters, image2);
-  });
-});
+// var mapOne = new CombinationMap(mortalityRates, "HD_ADJRATE");
+// mapOne.map = mapOne.scaleMapFrom1to1000(); 
+//asthmaPrevlaceInAdults = makeCencusIntoCounty(asthmaPrevlaceInAdults, "ASTHMA");        
+//var mapTwo = new CombinationMap(asthma, "ASTHMA_ADJRATE"); 
+// mapTwo.map = mapTwo.scaleMapFrom1to1000();
+// mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
+// mapOne.map = mapOne.scaleMapFrom1to1000(); 
+//var mapThree = new CombinationMap(mortalityRates, "HD_ADJRATE");
+//mapThree.map = mapThree.scaleMapFrom1to1000(); 
+//mapOne.map = mapOne.combineWithOtherMap(mapThree.returnMap(), mapThree.returnCaller()); 
+//mapOne.map = mapOne.scaleMapFrom1to1000(); 
+//mapGraph(mapOne.returnMap(),mapOne.returnCaller());
+//mapGraph(heartDisease, "HSR");
+// mapGraph(asthmaPrevlaceInAdults, "ASTHMA");
+// mapGraph(asthma, "ASTHMA_ADJRATE");
+// mapGraph(mortalityRates, "HD_ADJRATE");
+// mapGraph(heartDisease, "HSR");        
+// mapDot(ts, image1);
+//mapDot(behavioralCenters, image2);
