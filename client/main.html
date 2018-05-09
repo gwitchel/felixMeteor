@@ -1,0 +1,21 @@
+<template name="main">
+  <!-- always displays the header!--> 
+  <div class="container" style="margin-top:25px;">
+    {{> header}}
+    <!-- Yields to whatever page if current!--> 
+    {{> yield}}
+    <!-- always displays the footer!--> 
+    {{> footer}}
+  </div>
+</template>
+<template name="intro">
+  <body class="dark">
+  <!-- <img src="/images/intorduction.png"> !-->  
+   <button clas="clck1"><a href = "{{pathFor route='aboutUs'}}" ><p class="subtitleOne light ">more</p></a></button>
+    <a href = "{{pathFor route='map2'}}" ><p class="subtitleOne light ">map</p></a>
+  </body>
+</template>
+<template name="header">
+</template>
+<template name="footer">
+</template>

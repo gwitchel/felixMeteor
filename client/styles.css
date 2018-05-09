@@ -1,0 +1,142 @@
+/*fonts uploaded */
+@font-face {
+    font-family: sunn; 
+    src: url('fonts/sunn/SUNN.otf');
+}
+@font-face{
+    font-family: gant;
+    src: url('fonts/gant/gant.ttf');
+}
+@font-face{
+    font-family: aleo; 
+    src: url('fonts/aleo/desk/Aleo-Light.otf');
+}
+
+/* /*--------------------different background colors/*-------------------- */
+body.dark {
+    background-image: url('/images/introduction.png');    
+    background-color: #5d5d5d; 
+}
+template{
+    background-image: url('/images/introduction.png');        
+}
+body.light{
+    background-image: url('/images/aboutUS.png');
+    background-color: #ffffff;    
+}
+/*--------------------buttons-------------------- */
+img{
+    width: 100%; 
+    height: auto; 
+    position: absolute;               
+    top: 0%;                         
+}
+
+/*-------------------- texts --------------------------*/
+h1.light{
+    font-family:gant;
+    text-align: center;
+    font-size: 60px;
+    color: #ffffff; 
+}
+h1.dark{
+    font-family:gant;
+    text-align: center;
+    font-size: 60px;
+    color: #5d5d5d; 
+}
+h1.bigQuote{
+    font-family:gant;
+    text-align: center;
+    font-size: 60px;
+    color: #45050c; 
+    padding-right:10%;
+    padding-left:10%; 
+    position: absolute;               
+    top: 50%;                         
+    transform: translate(0, -100%) 
+}
+h6.bigQuote{
+    font-family:sunn;
+    vertical-align: middle;
+    font-size: 40px;
+    color: #5d5d5d; 
+    padding-right:10%;
+    padding-left:10%; 
+    position: absolute;               
+    top: 50%;                         
+    transform: translate(0, -90%)                      
+}
+.dark {
+    color: #5d5d5d; 
+}
+.light {
+    color: #ffffff; 
+}
+.subtitleOne{
+    font-family: sunn;
+    text-align: center;
+    font-size: 30px;    
+}
+.navBar{
+    font-family: sunn;
+    text-align: left; 
+    font-size: 15px;  
+}
+.clck1{
+    width: 100%;
+    height:100px;
+    position: fixed;
+    top:1000px;
+    left:500px
+}
+/* /*--------------------basic table for text as layed out in XD /*--------------------*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 0px;
+    background: rgba(0, 0, 0, 0);
+    table-layout: fixed;
+  }
+  /* light */
+  table td.titleCol.light{
+    font-family: sunn;
+    padding-right:30px;
+    padding-left:12%; 
+    padding-top:25px;
+    color: #ffffff;  
+    vertical-align: middle;    
+    text-align: right;
+    font-size: 50px;
+    width: 33%;
+  }
+  table td.textCol.light {
+    font-family: minion;
+    font-size: 17px;    
+    padding-top:25px;
+    padding-right:20%;    
+    color: #ffffff;
+    width: 66%;
+  }
+  /* dark */
+  table td.titleCol.dark{
+    font-family: sunn;
+    padding-right:30px;
+    padding-top:25px;
+    padding-left:12%; 
+    
+    color: #5d5d5d;  
+    vertical-align: middle;    
+    text-align: right;
+    font-size: 50px;
+    width: 33%;
+  }
+  table td.textCol.dark{
+    font-family: minion;
+    font-size: 17px;    
+    padding-top:25px;
+    padding-right:20%;    
+    color: #5d5d5d;
+    width: 66%;
+  }
+

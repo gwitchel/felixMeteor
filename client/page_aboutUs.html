@@ -1,0 +1,21 @@
+<template name="aboutUs">
+  <head> 
+        <link rel="stylesheet" type="text/css" href="styles.css">         
+  </head>  
+  <body class="light">
+      <h1 class="dark"> about us </h1>
+      <img src="/images/aboutUs.png">
+      <table> 
+        <tr>
+            <td class="titleCol dark"> What can felix be used for?</td>
+            <td class="textCol dark">Felix can be used to analyzing different communities based on their compatibility for your lifestyle and your needs. Users can enter different living requirements, ranging from  availability of 24 hour operating clinics, to disease statistics, or even just air quality, and Chi will generate a heat map indicating hotspots compatible with the users requirements. </td>
+        </tr>
+        <tr>
+            <td class="titleCol dark">Is my information safe?</td>
+            <td class="textCol dark"> We understand that not everyone is comfortable discussing their disabilities with the world. Because we don’t want to put users at risk, we made Chi 100% anonymous, meaning no user accounts, no emails, no spam, no names required.  Because Chi doesn’t utilize user data, there should be no reason to store it, and no reason to put our users at risk for cyber attacks. </td>
+        </tr>
+      </table>
+      <a href = "{{pathFor route='ourTeam'}}" id="toOurTeam"><p class="subtitleOne dark">our team</p></a>
+      <a href = "{{pathFor route='intro'}}" id="backToHome"><p class="subtitleOne dark">home</p></a>          
+  </body>
+</template> 
