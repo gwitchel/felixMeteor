@@ -13,16 +13,14 @@
 }
 
 /* /*--------------------different background colors/*-------------------- */
-body.dark {
-    background-image: url('/images/introduction.png');    
-    background-color: #5d5d5d; 
+body {
+    background-image: url('/images/introduction.png');
 }
 template{
-    background-image: url('/images/introduction.png');        
+    background: url('/images/introduction.png');        
 }
 body.light{
-    background-image: url('/images/aboutUS.png');
-    background-color: #ffffff;    
+    background: url('/images/aboutUS.png');
 }
 /*--------------------buttons-------------------- */
 img{

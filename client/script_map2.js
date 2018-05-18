@@ -24,7 +24,7 @@ Template.map2.helpers({
 Template.map2.events({
   'click': function(event){
     event.preventDefault();
-    var data = getData('https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson');
+    var data = getData('https://opendata.arcgis.com/datasets/6566b786e56b4101b3076305e0beff00_18.geojson');
     console.log(data); 
   }
 })
@@ -43,7 +43,7 @@ Template.map2.onCreated(function() {
     mapOne.map = mapOne.scaleMapFrom1to1000(); 
     mapOne.map = mapOne.removeOutliers(results, "SUICIDE_ADJRATE");     
     mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance);
-    var results2 = getData('https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson');
+    var results2 = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
     mapDot(results2,map.instance);
   });
 });
