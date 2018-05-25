@@ -5,6 +5,7 @@ import './page_map2.html';
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});
+    
   });
 }
 // uplods the data 
@@ -20,14 +21,6 @@ Template.map2.helpers({
     }
   }
 });
-// a click event to test weather data retrieval is working 
-Template.map2.events({
-  'click': function(event){
-    event.preventDefault();
-    var data = getData('https://opendata.arcgis.com/datasets/6566b786e56b4101b3076305e0beff00_18.geojson');
-    console.log(data); 
-  }
-})
 // when the map is created draw to map 
 // make sure to use map.instance not just map 
 Template.map2.onCreated(function() {
@@ -38,16 +31,65 @@ Template.map2.onCreated(function() {
       position: map.options.center,
       map: map.instance
     });
-    var results = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
-    var mapOne = new CombinationMap(results, "SUICIDE_ADJRATE");
-    mapOne.map = mapOne.scaleMapFrom1to1000(); 
-    mapOne.map = mapOne.removeOutliers(results, "SUICIDE_ADJRATE");     
-    mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance);
-    var results2 = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
-    mapDot(results2,map.instance);
+    var links = doThis();
+    for(var i = 0; i < links.length; i++){
+      var data = getData(links[i])
+      console.log(data.features[i].geometry) 
+      if(data.features[i].geometry.type == "Point"){ mapDot(getData(links[i]),map.instance); 
+      } //else { console.log ("Poly")}   
+      if(data.features[i].geometry.type == "Polygon") {
+        var mapOne = new CombinationMap(data, "Disability_TCNPop_With_A_Disability");
+        mapOne.map = mapOne.scaleMapFrom1to1000(); 
+        mapGraph(mapOne.returnMap(), "Disability_TCNPop_With_A_Disability", map.instance);
+      };
+
+    }
+    //var results = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
+    //var mapOne = new CombinationMap(results, "SUICIDE_ADJRATE");
+    //mapOne.map = mapOne.scaleMapFrom1to1000(); 
+    //mapOne.map = mapOne.removeOutliers(results, "SUICIDE_ADJRATE");     
+    //mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance);
+    //var results2 = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
+    //mapDot(results2,map.instance);   
   });
 });
 // returns data from a database
+function doesAlreadyExist(arr, num){
+  for(var m = 0; m < arr.length; m++){
+    if(arr[m] == num) return true; 
+  }
+  return false; 
+}
+function doThis(){
+  var toMap = Diseases.find({}).fetch(); 
+  var mappy = []; 
+  for(var i = 0; i < toMap.length; i++){
+    mappy.push(toMap[i].id);
+  }
+  // mapToDisease
+  // mapTable
+  var linksToMapsNeed = [];
+  for(var i = 0; i < mapToDisease.length; i++){
+    for(var j = 0; j < mappy.length; j++){
+      if(mapToDisease[i].diseaseID == parseInt(mappy[j])) linksToMapsNeed.push(mapToDisease[i].linkedMapsId)
+    }
+  }
+  var n = []; 
+  for(var i = 0; i < linksToMapsNeed.length; i++){
+    for(var j = 0; j < linksToMapsNeed[i].length; j++){
+      if(!doesAlreadyExist(n, linksToMapsNeed[i][j])) n.push(linksToMapsNeed[i][j]);
+    }
+  }
+  linksToMapsNeed = n;
+  n = [] 
+  for(var i = 0; i < linksToMapsNeed.length; i++){
+    for(var j = 0; j < mapTable.length; j++){
+      if (linksToMapsNeed[i] === mapTable[j].id) n.push(mapTable[j].link); 
+    }
+  }
+  linksToMapsNeed = n; 
+  return linksToMapsNeed;
+}
 function getData(url){  
   var x = ""
   var request = new XMLHttpRequest(); 
@@ -59,6 +101,7 @@ function getData(url){
   request.send();
   return x; 
 }
+
   // finds the lowest number of whatevr term you are searching for in a given dataset 
   function findLowest(results, term){
     var lowest = results.features[0].properties[term]; 
@@ -133,6 +176,7 @@ function getData(url){
   }
   // takes a map and displays in on the screen 
   mapGraph = function(results,scaleTerm,mapRef) {
+    debugger;
     for(var i = 0; i < results.features.length; i++){
       var coords = []; 
       // creates polygons
@@ -178,6 +222,7 @@ function getData(url){
   }
   //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
   function getColor(val,lowerLim, uppperLim){
+    debugger;
     var setZero = uppperLim - lowerLim;
     var scaleFactor = 255/setZero; 
     var color = 255- Math.round(val * scaleFactor + lowerLim);
@@ -312,3 +357,108 @@ function getData(url){
 // mapGraph(heartDisease, "HSR");        
 // mapDot(ts, image1);
 //mapDot(behavioralCenters, image2);
+
+var mapTable = [
+    {
+        "id": 1,
+        "name":"Trauma Center Designation",
+        "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 2,
+        "name":"Colorado Drug Treatment Programs and Resources",
+        "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 3,
+        "name":"EMS and Ambulance Agencies",
+        "link": "https://opendata.arcgis.com/datasets/5a7d931d53dd436ab0544c9e76eafa3a_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 4,
+        "name":"Community Behavioral Health Centers",
+        "link": "https://opendata.arcgis.com/datasets/47c5f7f84d8a4740acd9acd4ee7c2caa_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 5,
+        "name":"WIC Clinic Locations",
+        "link": "https://opendata.arcgis.com/datasets/1f51d2a2de3642e594d19d02c9950576_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 6,
+        "name":"Air Ambulance Agencies",
+        "link": "https://opendata.arcgis.com/datasets/a5236c32b2c64c7cb785dd0dca42142e_1.geojson",
+        "type":"point"
+    },
+    {
+        "id": 7,
+        "name":"Health Facilities",
+        "link": "https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 8,
+        "name":"Colorado Local Public Health Agency Locations",
+        "link": "https://opendata.arcgis.com/datasets/982070ee811e4961bcc24afc45c7b745_0.geojson",
+        "type":"point"
+    },
+    {
+        "id": 9,
+        "name":"Colorado Licensed Childcare Providers",
+        "link": "https://opendata.arcgis.com/datasets/ba8161673d734074a081006adc7ea496_0.geojson",
+        "type":""
+    },
+    {
+        "id": 10,
+        "name":"Self Care Difficulty (Census Tracts)",
+        "link": "https://opendata.arcgis.com/datasets/e084d34fcbec41488ddfd9fd84d08cef_17.geojson",
+        "type":"Polygon",
+        "caller":"Disability_TCNPop_With_A_Disability"
+    }
+]
+
+var mapToDisease = [
+  {
+     "diseaseID":1,
+     "linkedMapsId":[1,2,6,7,10] 
+  },{
+      "diseaseID":2,
+      "linkedMapsId":[1,2,6,7,10] 
+  },
+  {
+      "diseaseID":3,
+      "linkedMapsId":[1,2,6,7,10] 
+  },
+  {
+      "diseaseID":4,
+      "linkedMapsId":[1,5,7,8,9,10] 
+  },
+  {
+      "diseaseID":5,
+      "linkedMapsId":[2,3,5,7] 
+  },
+  {
+      "diseaseID":6,
+      "linkedMapsId":[1,2,6,7,10] 
+  },
+  {
+      "diseaseID":7,
+      "linkedMapsId":[1,2,6,7,10] 
+  },{
+      "diseaseID":8,
+      "linkedMapsId":[2,4]
+  },
+  {
+      "diseaseID":9,
+      "linkedMapsId":[2,4,5,10] 
+  },
+  {
+      "diseaseID":10,
+      "linkedMapsId":[1,2,5,6,7,10] 
+  } 
+] 

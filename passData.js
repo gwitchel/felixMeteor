@@ -1,34 +1,4 @@
 
-if (Meteor.isClient) {
-    Template.simple.result = function () {
-      return Session.get('serverSimpleResponse') || "";
-    };
-    Template.simple.events = {
-      'click input' : function () {
-          Meteor.call('getCurrentTime',function(err, response) {
-              debugger;
-              Session.set('serverSimpleResponse', JSON.stringify(response));
-          });
-  
-      }
-    };
-  
-    Template.passData.result = function () {
-      return Session.get('serverDataResponse') || "";
-    };
-    Template.passData.events = {
-      'click input[type=button]' : function () {
-          Meteor.call('welcome', $('input[type=text]').val(), function(err,response) {
-              if(err) {
-                  Session.set('serverDataResponse', "Error:" + err.reason);
-                  return;
-              }
-              Session.set('serverDataResponse', response);
-          });
-      }
-    };
-  }
-  
   if (Meteor.isServer) {
     Meteor.startup(function () {
       Meteor.methods({
@@ -38,14 +8,32 @@ if (Meteor.isClient) {
             const j = await fetchResult.json();
             return j
         },
-  
-        welcome: function (name) {
-          console.log('on server, welcome called with name: ', name);
+        getData: async function (name) {
+            let fetchResult;            
           if(name==undefined || name.length<=0) {
             throw new Meteor.Error(404, "Please enter your name");
           }
-          return "Welcome " + name;
+          fetchResult = await fetch('https://ghr.nlm.nih.gov/condition/' + name + '?report=json');
+          const j = await fetchResult.json();
+          return j;
         }
       });
     });
   }
+
+function findSymptoms(){
+
+}
+
+function lookForWord(string,word){
+    var indexes = []; 
+    var c = true; 
+    var c2 = 0; 
+    while( c !== -1 ){
+        c2++
+        c = string.indexOf(" " + word + "  ")
+        if(c!== -1) indexes.push(c); 
+        if(c2 > 100) c = -1; 
+    }
+    return indexes; 
+}

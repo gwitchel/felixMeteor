@@ -1,0 +1,42 @@
+{
+    "LargeLinks": [
+        {
+           "diseaseID":1,
+           "linkedMapsId":[1,2,6,7,10] 
+        },{
+            "diseaseID":2,
+            "linkedMapsId":[1,2,6,7,10] 
+        },
+        {
+            "diseaseID":3,
+            "linkedMapsId":[1,2,6,7,10] 
+        },
+        {
+            "diseaseID":4,
+            "linkedMapsId":[1,5,7,8,9,10] 
+        },
+        {
+            "diseaseID":5,
+            "linkedMapsId":[2,3,5,7] 
+        },
+        {
+            "diseaseID":6,
+            "linkedMapsId":[1,2,6,7,10] 
+        },
+        {
+            "diseaseID":7,
+            "linkedMapsId":[1,2,6,7,10] 
+        },{
+            "diseaseID":8,
+            "linkedMapsId":[2,4]
+        },
+        {
+            "diseaseID":9,
+            "linkedMapsId":[2,4,5,10] 
+        },
+        {
+            "diseaseID":10,
+            "linkedMapsId":[1,2,5,6,7,10] 
+        } 
+    ] 
+}

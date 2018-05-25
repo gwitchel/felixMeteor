@@ -33,6 +33,10 @@ Router.route('/intro',{
 Router.route('/disease',{
   name: 'getDiseaseData'
 })
+Router.route('/page_enter_data',{
+  name: 'enterData'
+})
+
 Router.route('/', {
   template: 'intro'
 });

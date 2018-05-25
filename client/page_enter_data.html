@@ -1,0 +1,8 @@
+<template name = "enterData">
+    {{#each returnDiseases}}
+    <input type="checkbox" class="cbn" id={{this.id}}>
+    {{this.name}}
+    <br>
+    {{/each}}
+    <button class="showMap">Show me my map</button>
+</template>
