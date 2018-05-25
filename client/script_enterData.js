@@ -2,6 +2,7 @@ import { Mongo } from 'meteor/mongo'
 
 Template.enterData.helpers({
     returnDiseases() {
+        // returns a list of diseases for hte interface
       return diseaseTable; 
     }
 });
@@ -9,9 +10,8 @@ Template.enterData.events({
     'click .showMap': function(){
         var cb = document.getElementsByClassName("cbn");
         for(var i = 0; i < cb.length; i++){
-            var name = cb[i].id;
-            if(cb[i].checked)  Diseases.insert({ id: name });
-            
+            var name = cb[i].id;             
+            if(cb[i].checked) Diseases.insert({ id: name });
         }
         Router.go("map2");
     }
@@ -57,5 +57,4 @@ var diseaseTable = [
         "id": 10,
         "name":"obstructive pulminary disease"
     }
-
 ]

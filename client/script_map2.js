@@ -5,7 +5,6 @@ import './page_map2.html';
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});
-    
   });
 }
 // uplods the data 
@@ -26,33 +25,57 @@ Template.map2.helpers({
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
-    // Add a marker to the map once it's ready
-    var marker = new google.maps.Marker({
-      position: map.options.center,
-      map: map.instance
-    });
-    var links = doThis();
+    // get the links from the previouse page --> maybe see if you can do this with cookie data
+    var links = convertToMappingTables();
+    var polyGonsToMap = [];
+    console.log(document.cookie)
+    // maps the data to the map
     for(var i = 0; i < links.length; i++){
-      var data = getData(links[i])
+      var data = getData(links[i].link)
       console.log(data.features[i].geometry) 
-      if(data.features[i].geometry.type == "Point"){ mapDot(getData(links[i]),map.instance); 
-      } //else { console.log ("Poly")}   
+      if(data.features[i].geometry.type == "Point") mapDot(getData(links[i].link),map.instance); 
       if(data.features[i].geometry.type == "Polygon") {
-        var mapOne = new CombinationMap(data, "Disability_TCNPop_With_A_Disability");
-        mapOne.map = mapOne.scaleMapFrom1to1000(); 
-        mapGraph(mapOne.returnMap(), "Disability_TCNPop_With_A_Disability", map.instance);
+        polyGonsToMap.push(new CombinationMap(data, links[i].caller));
+        //var mapOne = 
+        //mapOne.map = mapOne.scaleMapFrom1to1000(); 
+        //mapGraph(mapOne.returnMap(), links[i].caller, map.instance);
       };
-
-    }
-    //var results = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
-    //var mapOne = new CombinationMap(results, "SUICIDE_ADJRATE");
-    //mapOne.map = mapOne.scaleMapFrom1to1000(); 
-    //mapOne.map = mapOne.removeOutliers(results, "SUICIDE_ADJRATE");     
-    //mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance);
-    //var results2 = getData('https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson'); 
-    //mapDot(results2,map.instance);   
+    } 
+    var mapOne;
+    if(polyGonsToMap.length > 1){
+      mapOne = polyGonsToMap[0];
+      //mapOne.map = mapOne.scaleMapFrom1to1000();
+      for(var i = 1; i < polyGonsToMap.length; i++){
+        var mapTwo = polyGonsToMap[i]; 
+        //console.log("one")
+        //logData(mapOne.returnMap(),mapOne.returnCaller())
+        //logData(mapTwo.returnMap(),mapTwo.returnCaller())
+        mapTwo.map = mapTwo.scaleMapFrom1to1000();
+        //console.log("two")
+        //logData(mapOne.returnMap(),mapOne.returnCaller())
+        //logData(mapTwo.returnMap(),mapTwo.returnCaller())
+        debugger;
+        mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
+        console.log("three")
+        logData(mapOne.returnMap(),mapOne.returnCaller())
+        logData(mapTwo.returnMap(),mapTwo.returnCaller())
+        mapOne.map = mapOne.scaleMapFrom1to1000(); 
+        console.log("four")
+        logData(mapOne.returnMap(),mapOne.returnCaller())
+        logData(mapTwo.returnMap(),mapTwo.returnCaller())
+      }
+      mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance); 
+    } 
   });
 });
+function logData(results, term){
+  var highest = results.features[0].properties[term]; 
+  var foo = []
+  for(var  i = 0; i < results.features.length; i++){
+    foo.push(results.features[i].properties[term])
+  }
+  console.log(foo);
+}
 // returns data from a database
 function doesAlreadyExist(arr, num){
   for(var m = 0; m < arr.length; m++){
@@ -60,34 +83,38 @@ function doesAlreadyExist(arr, num){
   }
   return false; 
 }
-function doThis(){
+function convertToMappingTables(){
+  // get the diseases 
   var toMap = Diseases.find({}).fetch(); 
   var mappy = []; 
+  // put each array into a big array
   for(var i = 0; i < toMap.length; i++){
     mappy.push(toMap[i].id);
   }
-  // mapToDisease
-  // mapTable
+  //remove elements from the array
   var linksToMapsNeed = [];
   for(var i = 0; i < mapToDisease.length; i++){
     for(var j = 0; j < mappy.length; j++){
       if(mapToDisease[i].diseaseID == parseInt(mappy[j])) linksToMapsNeed.push(mapToDisease[i].linkedMapsId)
     }
   }
+  // remove doubles
   var n = []; 
   for(var i = 0; i < linksToMapsNeed.length; i++){
     for(var j = 0; j < linksToMapsNeed[i].length; j++){
       if(!doesAlreadyExist(n, linksToMapsNeed[i][j])) n.push(linksToMapsNeed[i][j]);
     }
   }
+  // add in the corrolative table object 
   linksToMapsNeed = n;
   n = [] 
   for(var i = 0; i < linksToMapsNeed.length; i++){
     for(var j = 0; j < mapTable.length; j++){
-      if (linksToMapsNeed[i] === mapTable[j].id) n.push(mapTable[j].link); 
+      if (linksToMapsNeed[i] === mapTable[j].id) n.push(mapTable[j]); 
     }
   }
   linksToMapsNeed = n; 
+  // return the tables
   return linksToMapsNeed;
 }
 function getData(url){  
@@ -101,7 +128,6 @@ function getData(url){
   request.send();
   return x; 
 }
-
   // finds the lowest number of whatevr term you are searching for in a given dataset 
   function findLowest(results, term){
     var lowest = results.features[0].properties[term]; 
@@ -176,7 +202,6 @@ function getData(url){
   }
   // takes a map and displays in on the screen 
   mapGraph = function(results,scaleTerm,mapRef) {
-    debugger;
     for(var i = 0; i < results.features.length; i++){
       var coords = []; 
       // creates polygons
@@ -222,7 +247,6 @@ function getData(url){
   }
   //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
   function getColor(val,lowerLim, uppperLim){
-    debugger;
     var setZero = uppperLim - lowerLim;
     var scaleFactor = 255/setZero; 
     var color = 255- Math.round(val * scaleFactor + lowerLim);
@@ -266,7 +290,8 @@ function getData(url){
       var shiftLeft = findLowest(this.map, this.firstCaller); 
       for(var i = 0; i < this.map.features.length; i++){
          this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller] - shiftLeft;
-      }           
+      }  
+      debugger;         
       var max = findHighest(this.map, this.firstCaller); 
       var scaleFactor = 100/max;
       for(var i = 0; i < this.map.features.length; i++) this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller]*scaleFactor;
@@ -279,7 +304,7 @@ function getData(url){
       this.trackers.push(otherCaller);
       for(var j = 0; j < this.map.features.length; j++){
         for(var i = 0; i < otherMap.features.length; i++){
-          if(this.map.features[j].properties.COUNTY_NAME == otherMap.features[i].properties.COUNTY_NAME){
+          if(this.map.features[j].properties.COUNTY == otherMap.features[i].properties.COUNTY){
             this.map.features[j].properties[this.firstCaller] = (this.map.features[j].properties[this.firstCaller] + otherMap.features[i].properties[otherCaller])/2;
           }
         }
@@ -419,7 +444,15 @@ var mapTable = [
         "link": "https://opendata.arcgis.com/datasets/e084d34fcbec41488ddfd9fd84d08cef_17.geojson",
         "type":"Polygon",
         "caller":"Disability_TCNPop_With_A_Disability"
-    }
+    },
+    {
+      "id": 11,
+      "name":"Cigarette Smoking in Adults",
+      "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
+      "type":"Polygon",
+      "caller":"SMOKER"
+  }
+    
 ]
 
 var mapToDisease = [
@@ -436,7 +469,7 @@ var mapToDisease = [
   },
   {
       "diseaseID":4,
-      "linkedMapsId":[1,5,7,8,9,10] 
+      "linkedMapsId":[1,5,7,8,9,10,11] 
   },
   {
       "diseaseID":5,
