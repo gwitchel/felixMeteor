@@ -1,5 +1,4 @@
-
-  if (Meteor.isServer) {
+if (Meteor.isServer) {
     Meteor.startup(function () {
       Meteor.methods({
          getCurrentTime: async function () {
@@ -19,7 +18,7 @@
         }
       });
     });
-  }
+}
 
 function findSymptoms(){
 

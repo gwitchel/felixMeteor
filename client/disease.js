@@ -26,8 +26,15 @@ if (Meteor.isClient) {
                   return;
               }
               //console.log(response["text-list"][0].text["html"])
+              console.log(response)
               console.log(symptoms(response["text-list"][0].text["html"]));
-              //Session.set('serverDataResponse', response);
+              if(typeof Session.get('selectedCondition') !== 'undefined'){
+                  var x = Session.get('selectedCondition');
+                  x.push(response); 
+                  Session.set('selectedCondition', x);                  
+              } else {
+                Session.set('selectedCondition', [response]);                
+              }
           });
       }
     };

@@ -25,14 +25,15 @@ Template.map2.helpers({
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
+    debugger;
+    console.log(Session.get('selectedCondition'))
+    var links = Session.get('linksToMap');    
     // get the links from the previouse page --> maybe see if you can do this with cookie data
-    var links = convertToMappingTables();
-    var polyGonsToMap = [];
-    console.log(document.cookie)
+    //var links = convertToMappingTables();
+    //var polyGonsToMap = [];
     // maps the data to the map
     for(var i = 0; i < links.length; i++){
-      var data = getData(links[i].link)
-      console.log(data.features[i].geometry) 
+      var data = getData(links[i].link);
       if(data.features[i].geometry.type == "Point") mapDot(getData(links[i].link),map.instance); 
       if(data.features[i].geometry.type == "Polygon") {
         polyGonsToMap.push(new CombinationMap(data, links[i].caller));
