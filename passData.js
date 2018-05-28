@@ -10,18 +10,28 @@ if (Meteor.isServer) {
         getData: async function (name) {
             let fetchResult;            
           if(name==undefined || name.length<=0) {
-            throw new Meteor.Error(404, "Please enter your name");
+            throw new Meteor.Error(404, "Please enter a condition");
           }
-          fetchResult = await fetch('https://ghr.nlm.nih.gov/condition/' + name + '?report=json');
-          const j = await fetchResult.json();
-          return j;
+          var k = cleanName(name)
+          fetchResult = await fetch('https://ghr.nlm.nih.gov/condition/' + k + '?report=json');
+          if(typeof fetchResult == 'object'){
+            const j = await fetchResult.json();
+            return j;
+          }
+          // figure out how to get an alert that the condition doesn't exist out...
         }
       });
     });
 }
 
-function findSymptoms(){
-
+function cleanName(name){
+    debugger;
+    var n = name; 
+    console.log(n);
+    //if(n.indexOf(" ") != -1) n = n.substring(0,n.indexOf(" "))+ '-' + n.substring(n.indexOf(" ")+1);
+    n = n.replace(" ", "-");
+    console.log(n);
+    return n; 
 }
 
 function lookForWord(string,word){

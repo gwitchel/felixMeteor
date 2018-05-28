@@ -27,7 +27,7 @@ if (Meteor.isClient) {
               }
               //console.log(response["text-list"][0].text["html"])
               console.log(response)
-              console.log(symptoms(response["text-list"][0].text["html"]));
+              //console.log(symptoms(response["text-list"][0].text["html"]));
               if(typeof Session.get('selectedCondition') !== 'undefined'){
                   var x = Session.get('selectedCondition');
                   x.push(response); 

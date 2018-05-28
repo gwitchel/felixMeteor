@@ -31,7 +31,6 @@ function checkSymptomsAgainstList(MD,TTLK){
     }
     return false; 
 }
-
 var mapData = {
     "maps": [
         {

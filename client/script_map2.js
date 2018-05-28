@@ -30,7 +30,7 @@ Template.map2.onCreated(function() {
     var links = Session.get('linksToMap');    
     // get the links from the previouse page --> maybe see if you can do this with cookie data
     //var links = convertToMappingTables();
-    //var polyGonsToMap = [];
+    var polyGonsToMap = [];
     // maps the data to the map
     for(var i = 0; i < links.length; i++){
       var data = getData(links[i].link);
