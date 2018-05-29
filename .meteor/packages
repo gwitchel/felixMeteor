@@ -27,3 +27,4 @@ webapp
 simple:json-routes
 session
 timbrandin:fetch
+chrisbutler:postmessage

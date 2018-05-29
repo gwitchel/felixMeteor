@@ -1,12 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 
-// Meteor.startup(() => {
-//   JsonRoutes.setResponseHeaders({
-//     "Cache-Control": "no-store",
-//     "Pragma": "no-cache",
-//     "Access-Control-Allow-Origin": "*",
-//     "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
-//     "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
-//   });
-// });
-
+Meteor.startup( () => {
+    //BrowserPolicy.framing.disallow()    
+    //BrowserPolicy.content.allowOriginForAll( 'maps.googleapis.com');  
+    //BrowserPolicy.content.allowOriginForAll( 'https://ghr.nlm.nih.gov');
+    //BrowserPolicy.content.allowOriginForAll( 'fonts.googleapis.com' );
+    //BrowserPolicy.framing.restrictToOrigin('https://ghr.nlm.nih.gov')
+    //BrowserPolicy.framing.restrictToOrigin( 'localhost:5000' );
+    //BrowserPolicy.framing.allowAll();
+    //BrowserPolicy.content.allowInlineScripts();
+    //BrowserPolicy.content.allowEval();
+    //BrowserPolicy.content.allowInlineStyles();
+    //BrowserPolicy.content.allowDataUrlForAll();
+    //BrowserPolicy.content.allowSameOriginForAll();
+  });

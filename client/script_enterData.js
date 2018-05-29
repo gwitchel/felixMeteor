@@ -8,7 +8,6 @@ Template.enterData.helpers({
 });
 Template.enterData.events({
     'click .showMap': function(){
-        debugger;
         var selectedConditions = Session.get('selectedCondition'); 
         var links = []  
         for(var i = 0; i < mapData.maps.length; i++){
@@ -37,7 +36,8 @@ var mapData = {
             "id": 1,
             "name":"Trauma Center Designation",
             "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
-            "type":"point"
+            "type":"point",
+            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"]            
         },
         {
             "id": 2,

@@ -25,7 +25,6 @@ Template.map2.helpers({
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
-    debugger;
     console.log(Session.get('selectedCondition'))
     var links = Session.get('linksToMap');    
     // get the links from the previouse page --> maybe see if you can do this with cookie data
@@ -48,35 +47,16 @@ Template.map2.onCreated(function() {
       //mapOne.map = mapOne.scaleMapFrom1to1000();
       for(var i = 1; i < polyGonsToMap.length; i++){
         var mapTwo = polyGonsToMap[i]; 
-        //console.log("one")
-        //logData(mapOne.returnMap(),mapOne.returnCaller())
-        //logData(mapTwo.returnMap(),mapTwo.returnCaller())
         mapTwo.map = mapTwo.scaleMapFrom1to1000();
-        //console.log("two")
-        //logData(mapOne.returnMap(),mapOne.returnCaller())
-        //logData(mapTwo.returnMap(),mapTwo.returnCaller())
-        debugger;
         mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
-        console.log("three")
-        logData(mapOne.returnMap(),mapOne.returnCaller())
-        logData(mapTwo.returnMap(),mapTwo.returnCaller())
         mapOne.map = mapOne.scaleMapFrom1to1000(); 
-        console.log("four")
-        logData(mapOne.returnMap(),mapOne.returnCaller())
-        logData(mapTwo.returnMap(),mapTwo.returnCaller())
+
       }
       mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance); 
     } 
   });
 });
-function logData(results, term){
-  var highest = results.features[0].properties[term]; 
-  var foo = []
-  for(var  i = 0; i < results.features.length; i++){
-    foo.push(results.features[i].properties[term])
-  }
-  console.log(foo);
-}
+
 // returns data from a database
 function doesAlreadyExist(arr, num){
   for(var m = 0; m < arr.length; m++){
@@ -191,6 +171,7 @@ function getData(url){
   }
   // maps all of the point coordinates of a given data set 
   mapDot = function(results, mapRef) {
+    console.log(results)
     for (var i = 0; i < results.features.length; i++) {
       var coords = results.features[i].geometry.coordinates;
       var latLng = new google.maps.LatLng(coords[1],coords[0]);
@@ -199,11 +180,32 @@ function getData(url){
         map: mapRef,
         //icon: image
       });
+      attachSecretMessage(marker, results.features[i].properties.HOSPITAL_NAME);      
+      function attachSecretMessage(marker, secretMessage) {
+        var infowindow = new google.maps.InfoWindow({
+          content: secretMessage
+        });
+      
+        marker.addListener('click', function() {
+          infowindow.open(marker.get('map'), marker);
+        });
+      }
     }
   }
   // takes a map and displays in on the screen 
   mapGraph = function(results,scaleTerm,mapRef) {
+    function showArrays(event) {
+      debugger;
+      var contentString = '<b>'+ '</b><br>' +
+          'score: <br>' + this.fillColor +
+          '<br>';
+      // Replace the info window's content and position.
+      infoWindow.setContent(contentString);
+      infoWindow.setPosition(event.latLng);
+      infoWindow.open(mapRef);
+    }
     for(var i = 0; i < results.features.length; i++){
+      var k;
       var coords = []; 
       // creates polygons
       if(results.features[i].geometry.type == "Polygon"){
@@ -219,9 +221,12 @@ function getData(url){
           strokeOpacity: 0.8,
           strokeWeight: 2,
           fillColor:  color, 
-          fillOpacity: 1
+          fillOpacity: 0.5
         });
-        poly.setMap(mapRef);
+        poly.setMap(mapRef); 
+        k = results.features[i].properties[scaleTerm]        
+        poly.addListener('click', showArrays);
+        infoWindow = new google.maps.InfoWindow; 
       } 
       // creates multipolygons 
       if(results.features[i].geometry.type == "MultiPolygon"){
@@ -239,13 +244,18 @@ function getData(url){
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor:  color, 
-            fillOpacity: 1
+            fillOpacity: 0.5
           });
           poly.setMap(mapRef);
+          k = results.features[i].properties[scaleTerm]
+          poly.addListener('click', showArrays);
+          infoWindow = new google.maps.InfoWindow;          
         }
       }
     }
   }
+
+
   //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
   function getColor(val,lowerLim, uppperLim){
     var setZero = uppperLim - lowerLim;
@@ -292,7 +302,6 @@ function getData(url){
       for(var i = 0; i < this.map.features.length; i++){
          this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller] - shiftLeft;
       }  
-      debugger;         
       var max = findHighest(this.map, this.firstCaller); 
       var scaleFactor = 100/max;
       for(var i = 0; i < this.map.features.length; i++) this.map.features[i].properties[this.firstCaller] = this.map.features[i].properties[this.firstCaller]*scaleFactor;
@@ -364,135 +373,3 @@ function getData(url){
     }
     return hex;
   };
-// var mapOne = new CombinationMap(mortalityRates, "HD_ADJRATE");
-// mapOne.map = mapOne.scaleMapFrom1to1000(); 
-//asthmaPrevlaceInAdults = makeCencusIntoCounty(asthmaPrevlaceInAdults, "ASTHMA");        
-//var mapTwo = new CombinationMap(asthma, "ASTHMA_ADJRATE"); 
-// mapTwo.map = mapTwo.scaleMapFrom1to1000();
-// mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
-// mapOne.map = mapOne.scaleMapFrom1to1000(); 
-//var mapThree = new CombinationMap(mortalityRates, "HD_ADJRATE");
-//mapThree.map = mapThree.scaleMapFrom1to1000(); 
-//mapOne.map = mapOne.combineWithOtherMap(mapThree.returnMap(), mapThree.returnCaller()); 
-//mapOne.map = mapOne.scaleMapFrom1to1000(); 
-//mapGraph(mapOne.returnMap(),mapOne.returnCaller());
-//mapGraph(heartDisease, "HSR");
-// mapGraph(asthmaPrevlaceInAdults, "ASTHMA");
-// mapGraph(asthma, "ASTHMA_ADJRATE");
-// mapGraph(mortalityRates, "HD_ADJRATE");
-// mapGraph(heartDisease, "HSR");        
-// mapDot(ts, image1);
-//mapDot(behavioralCenters, image2);
-
-var mapTable = [
-    {
-        "id": 1,
-        "name":"Trauma Center Designation",
-        "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 2,
-        "name":"Colorado Drug Treatment Programs and Resources",
-        "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 3,
-        "name":"EMS and Ambulance Agencies",
-        "link": "https://opendata.arcgis.com/datasets/5a7d931d53dd436ab0544c9e76eafa3a_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 4,
-        "name":"Community Behavioral Health Centers",
-        "link": "https://opendata.arcgis.com/datasets/47c5f7f84d8a4740acd9acd4ee7c2caa_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 5,
-        "name":"WIC Clinic Locations",
-        "link": "https://opendata.arcgis.com/datasets/1f51d2a2de3642e594d19d02c9950576_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 6,
-        "name":"Air Ambulance Agencies",
-        "link": "https://opendata.arcgis.com/datasets/a5236c32b2c64c7cb785dd0dca42142e_1.geojson",
-        "type":"point"
-    },
-    {
-        "id": 7,
-        "name":"Health Facilities",
-        "link": "https://opendata.arcgis.com/datasets/914bc3a28a644f95b13829128e69ede4_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 8,
-        "name":"Colorado Local Public Health Agency Locations",
-        "link": "https://opendata.arcgis.com/datasets/982070ee811e4961bcc24afc45c7b745_0.geojson",
-        "type":"point"
-    },
-    {
-        "id": 9,
-        "name":"Colorado Licensed Childcare Providers",
-        "link": "https://opendata.arcgis.com/datasets/ba8161673d734074a081006adc7ea496_0.geojson",
-        "type":""
-    },
-    {
-        "id": 10,
-        "name":"Self Care Difficulty (Census Tracts)",
-        "link": "https://opendata.arcgis.com/datasets/e084d34fcbec41488ddfd9fd84d08cef_17.geojson",
-        "type":"Polygon",
-        "caller":"Disability_TCNPop_With_A_Disability"
-    },
-    {
-      "id": 11,
-      "name":"Cigarette Smoking in Adults",
-      "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
-      "type":"Polygon",
-      "caller":"SMOKER"
-  }
-    
-]
-
-var mapToDisease = [
-  {
-     "diseaseID":1,
-     "linkedMapsId":[1,2,6,7,10] 
-  },{
-      "diseaseID":2,
-      "linkedMapsId":[1,2,6,7,10] 
-  },
-  {
-      "diseaseID":3,
-      "linkedMapsId":[1,2,6,7,10] 
-  },
-  {
-      "diseaseID":4,
-      "linkedMapsId":[1,5,7,8,9,10,11] 
-  },
-  {
-      "diseaseID":5,
-      "linkedMapsId":[2,3,5,7] 
-  },
-  {
-      "diseaseID":6,
-      "linkedMapsId":[1,2,6,7,10] 
-  },
-  {
-      "diseaseID":7,
-      "linkedMapsId":[1,2,6,7,10] 
-  },{
-      "diseaseID":8,
-      "linkedMapsId":[2,4]
-  },
-  {
-      "diseaseID":9,
-      "linkedMapsId":[2,4,5,10] 
-  },
-  {
-      "diseaseID":10,
-      "linkedMapsId":[1,2,5,6,7,10] 
-  } 
-] 

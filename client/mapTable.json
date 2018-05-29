@@ -4,7 +4,7 @@
             "id": 1,
             "name":"Trauma Center Designation",
             "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
-            "type":"point"
+            "type":"point"                
         },
         {
             "id": 2,
@@ -81,7 +81,7 @@
             "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
             "type":"range",
             "caller":"SMOKER",
-            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","Ectopic pregnancy","Orofacial clefts"
+            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"
             ]
         },
         {
@@ -122,14 +122,16 @@
             "name":"Mobility/Ambulatory Difficulty (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/6566b786e56b4101b3076305e0beff00_18.geojson",
             "type":"range",
-            "caller":"Disability_TCNPop_With_An_Ambulatory_Difficulty_Age_Over_4"
+            "caller":"Disability_TCNPop_With_An_Ambulatory_Difficulty_Age_Over_4",
+            "relatedSymptoms" : ["joint", "swelling","movement","wheelchair", "arthritis","move","hypomobility"]
         },
         {
             "id": 19,
             "name":"Obesity in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/d7f4afc451b5495d9984bd4a5d98b200_8.geojson",
             "type":"range",
-            "caller":"OBESE"
+            "caller":"OBESE",
+            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
         },
         {
             "id": 20,
@@ -143,21 +145,25 @@
             "name":"Alcohol Consumption: Adults Who Binge Drink - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/b3e3108f65634da5a931a75793f65ab1_2.geojson",
             "type":"range",
-            "caller":"BINGED"
+            "caller":"BINGED",
+            "relatedSymptoms" : ["alcoholism","addiction","seizures","cancer"]
         },
         {
             "id": 22,
             "name":"Influenza Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/dd655a512f884f72a8fa03de2c0730a2_6.geojson",
             "type":"range",
-            "caller":"INFLUENZA_ADJRATE"
+            "caller":"INFLUENZA_ADJRATE",
+            "relatedSymptoms" : ["Body or muscle aches", "Chills","Cough","Fever","Headache","Sore throat"]
+            
         },
         {
             "id": 23,
             "name":"Asthma Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/3ca3d95062394449b245dab65e6d882d_0.geojson",
             "type":"range",
-            "caller":"ASTHMA_ADJRATE"
+            "caller":"ASTHMA_ADJRATE",
+            "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
         },
         {
             "id": 24,
@@ -171,28 +177,33 @@
             "name":"Overweight and Obese Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/3702d9b48efb49a8870bf0e375ea3817_9.geojson",
             "type":"range",
-            "caller":"OWOBESE"
+            "caller":"OWOBESE",
+            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
         },
         {
             "id": 26,
             "name":"Diabetes in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/8f2dfdf3435e45929c1a391e03f214c9_5.geojson",
             "type":"range",
-            "caller":"DIAB"
+            "caller":"DIAB",
+            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","pancreas"," beta cells", "insulin", "glucose","polyuria","polydipsia","hypoglycemia"]
         },
         {
             "id": 27,
             "name":"Heart Disease Mortality Rate (Census Tracts)",
             "link":"https://opendata.arcgis.com/datasets/f1a592eef8384946b0ae64701bece065_5.geojson",
             "type":"range",
-            "caller":"HD_ADJRATE"
+            "caller":"HD_ADJRATE",
+            "relatedSymptoms" : ["heart","oxygen","blood","heart murmur","tachypnea","hypotension", "hypoxemia", "cyanosis","aorta","coarctation of the aorta","double-outlet right ventricle","D-transposition of the great arteries","Ebstein anomaly", "hypoplastic left heart syndrome", "interrupted aortic arch", "pulmonary atresia", "single ventricle", "total anomalous pulmonary venous connection", "tetralogy of Fallot", "tricuspid atresia", "truncus arteriosus"]          
         },
         {
             "id": 28,
             "name":"Asthma Prevalence in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/99d966b6ab75450c93569a3f112f3002_1.geojson",
             "type":"range",
-            "caller":"ASTHMA"
+            "caller":"ASTHMA",
+            "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
+            
         },
         {
             "id": 29,
@@ -213,14 +224,17 @@
             "name":"Drug Poisoning or Overdose involving Rx Opioid Analgesic or Heroin Mortality Rate (Census Tract)",
             "link": "https://opendata.arcgis.com/datasets/4cb7534bb73341f4aa2f76b8069f2428_19.geojson",
             "type":"range",
-            "caller":"POD_DEATH_ADJRATE"
+            "caller":"POD_DEATH_ADJRATE",
+            "relatedSymptoms" : ["addiction","overdose","Opioids","drug"]
+            
         },
         {
             "id": 32,
             "name":"Hearing Difficulty (Census Tract)",
             "link":"https://opendata.arcgis.com/datasets/830436b761f24ee589216266feac5640_14.geojson",
             "type":"range",
-            "caller":"Disability_TCNPop_With_A_Hearing_Difficulty"
+            "caller":"Disability_TCNPop_With_A_Hearing_Difficulty",
+            "relatedSymptoms" : ["Nonsyndromic","hearing","deafness","hearing loss","sensorineural"]            
         },
         {
             "id": 33,
@@ -241,7 +255,9 @@
             "name":"Mental Health in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/e81e76791f7f47e080f39aafd79516f8_7.geojson",
             "type":"range",
-            "caller":""
+            "caller":"",
+            "relatedSymptoms" : ["mental","depression","Panic disorder","Obsessive-compulsive","Post-traumatic stress","Phobias","Generalized anxiety disorder","Anxiety" , "panic","Bipolar","Depression","Mood","Personality","Psychotic"
+            ]                        
         },
         {
             "id": 36,
@@ -249,13 +265,15 @@
             "link": "https://opendata.arcgis.com/datasets/b3a561e7cd584586a724aaff31bde04f_11.geojson",
             "type":"range",
             "caller":"POPOVER18"
+            
         },
         {
             "id": 37,
             "name":"Diabetes Hospitalization Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/9567507342654bb1bf8cfaaa3b498b3f_3.geojson",
             "type":"range",
-            "caller":"DIABETES_ADJRATE"
+            "caller":"DIABETES_ADJRATE",
+            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating","preeclampsia"]
         },
         {
             "id": 38,
