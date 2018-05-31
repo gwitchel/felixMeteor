@@ -18,7 +18,7 @@ Template.map2.helpers({
         zoom: 8
       };
     }
-  }
+  }, 
 });
 // when the map is created draw to map 
 // make sure to use map.instance not just map 
@@ -36,9 +36,7 @@ Template.map2.onCreated(function() {
       if(data.features[i].geometry.type == "Point") mapDot(getData(links[i].link),map.instance); 
       if(data.features[i].geometry.type == "Polygon") {
         polyGonsToMap.push(new CombinationMap(data, links[i].caller));
-        //var mapOne = 
-        //mapOne.map = mapOne.scaleMapFrom1to1000(); 
-        //mapGraph(mapOne.returnMap(), links[i].caller, map.instance);
+        polyGonsToMap[0].map = polyGonsToMap[0].scaleMapFrom1to1000();
       };
     } 
     var mapOne;
@@ -52,11 +50,11 @@ Template.map2.onCreated(function() {
         mapOne.map = mapOne.scaleMapFrom1to1000(); 
 
       }
+      //console.log(rank(mapOne.returnMap(),mapOne.returnCaller()))
       mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance); 
     } 
   });
 });
-
 // returns data from a database
 function doesAlreadyExist(arr, num){
   for(var m = 0; m < arr.length; m++){
@@ -195,10 +193,9 @@ function getData(url){
   // takes a map and displays in on the screen 
   mapGraph = function(results,scaleTerm,mapRef) {
     function showArrays(event) {
-      debugger;
       var contentString = '<b>'+ '</b><br>' +
-          'score: <br>' + this.fillColor +
-          '<br>';
+          'county: ' + this.name +
+          '<br>' + 'composite score ' + this.score;
       // Replace the info window's content and position.
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
@@ -221,7 +218,10 @@ function getData(url){
           strokeOpacity: 0.8,
           strokeWeight: 2,
           fillColor:  color, 
-          fillOpacity: 0.5
+          fillOpacity: 0.75,
+          name : results.features[i].properties.COUNTY,
+          score: results.features[i].properties[scaleTerm]
+          
         });
         poly.setMap(mapRef); 
         k = results.features[i].properties[scaleTerm]        
@@ -244,7 +244,9 @@ function getData(url){
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor:  color, 
-            fillOpacity: 0.5
+            fillOpacity: 0.75,
+            name: results.features[i].properties.COUNTY,
+            score: results.features[i].properties[scaleTerm]
           });
           poly.setMap(mapRef);
           k = results.features[i].properties[scaleTerm]
@@ -253,41 +255,6 @@ function getData(url){
         }
       }
     }
-  }
-
-
-  //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
-  function getColor(val,lowerLim, uppperLim){
-    var setZero = uppperLim - lowerLim;
-    var scaleFactor = 255/setZero; 
-    var color = 255- Math.round(val * scaleFactor + lowerLim);
-    var color2 = Math.round(val * scaleFactor + lowerLim)
-    color = rgbToHex(color);
-    color2 = rgbToHex(color2)
-    return "#" + color2  + "00" + color; 
-  }
-  // if it's a cencus, just average all the values of cencuses in the same county. 
-  function makeCencusIntoCounty(results,varSearch){
-    for(var i = 0; i < results.features.length; i++) {
-      var county = results.features[i].properties.COUNTY;
-      var sameCountyNums = []
-      for(var j = 0; j < results.features.length; j++){
-        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) sameCountyNums.push(results.features[j].properties.varSearch);
-      }
-      var avgNumb = avgNum(sameCountyNums); 
-      for(var j = 0; j < results.features.length; j++){
-        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) results.features[j].properties.varSearch = avgNumb;
-      }
-    }
-    return results; 
-  }
-  // averages an array of numbers 
-  function avgNum(nums){
-    var total = 0;
-    for(var i = 0; i < nums.length; i++){
-      total+=i; 
-    }
-    return total/nums.length; 
   }
   // object for any map that will be manipulated and not just drawn 
   var CombinationMap = function(mapOne, caller){
@@ -373,3 +340,59 @@ function getData(url){
     }
     return hex;
   };
+
+  function rank(mappy, term,county){
+    function findlow(map, term){
+      var lowest = map.features[0] 
+      for(var i = 0; i < map.features.length; i++){
+        if(lowest.properties[term] > map.features[i].properties[term]) lowest = map.features[i];
+      }
+      return lowest; 
+    }
+    var rank = []; 
+    var mapref = mappy; 
+    for(var i = 0; i < mapref.features.length; i++){
+      var lowest = findlow(mapref, term);
+      rank.push(lowest);
+      for(var j = 0; j <mapref.features.length; j++){
+        if(mapref.features[j].properties[this.firstCaller] = lowest.properties[this.firstCaller]) mapref = mapref.splice(1,1)
+      }
+    }
+    for(var i = 0; i < rank.length; i++){
+      if(rank[i].features[j].properties.COUNTY === county ) return i 
+    }
+    return rank
+  }
+  //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
+  function getColor(val,lowerLim, uppperLim){
+    var setZero = uppperLim - lowerLim;
+    var scaleFactor = 255/setZero; 
+    var color = 255- Math.round(val * scaleFactor + lowerLim);
+    var color2 = Math.round(val * scaleFactor + lowerLim)
+    color = rgbToHex(color);
+    color2 = rgbToHex(color2)
+    return "#" + color2  + "00" + color; 
+  }
+  // if it's a cencus, just average all the values of cencuses in the same county. 
+  function makeCencusIntoCounty(results,varSearch){
+    for(var i = 0; i < results.features.length; i++) {
+      var county = results.features[i].properties.COUNTY;
+      var sameCountyNums = []
+      for(var j = 0; j < results.features.length; j++){
+        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) sameCountyNums.push(results.features[j].properties.varSearch);
+      }
+      var avgNumb = avgNum(sameCountyNums); 
+      for(var j = 0; j < results.features.length; j++){
+        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) results.features[j].properties.varSearch = avgNumb;
+      }
+    }
+    return results; 
+  }
+  // averages an array of numbers 
+  function avgNum(nums){
+    var total = 0;
+    for(var i = 0; i < nums.length; i++){
+      total+=i; 
+    }
+    return total/nums.length; 
+  }

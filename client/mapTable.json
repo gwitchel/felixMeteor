@@ -255,8 +255,8 @@
             "name":"Mental Health in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/e81e76791f7f47e080f39aafd79516f8_7.geojson",
             "type":"range",
-            "caller":"",
-            "relatedSymptoms" : ["mental","depression","Panic disorder","Obsessive-compulsive","Post-traumatic stress","Phobias","Generalized anxiety disorder","Anxiety" , "panic","Bipolar","Depression","Mood","Personality","Psychotic"
+            "caller":"MNTLD",
+            "relatedSymptoms" : ["mental","depression","Panic","Obsessive-compulsive","Post-traumatic stress","Phobias","Generalized anxiety disorder","Anxiety" , "panic","Bipolar","Depression","Mood","Personality","Psychotic"
             ]                        
         },
         {

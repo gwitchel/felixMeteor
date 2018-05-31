@@ -1,7 +1,96 @@
 <template name = "enterData">
-    
-    <iframe src="https://ghr.nlm.nih.gov"></iframe>        
-    {{>getDiseaseData}}
-    <button class="showMap">Show me my map</button>
+    {{>enterSymptomData}}
+    {{>quiz}}
+    <button class=" btn btn-primary next"> next</button>      
 </template>
+
+<template name = "enterSymptomData">
+    <!-- <iframe src="https://ghr.nlm.nih.gov"></iframe> !-->
+    <div class="card">
+        <div class="card-body"> 
+            {{> passData}}
+        </div>
+            <ul class="list-group list-group-flush">
+                {{#each returnDiseases}} 
+                    <li class="list-group-item">
+                        {{this}}
+                        <button class="btn btn-outline-info btn-sm removeCondition" id = "{{this}}"> remove </button>
+                    </li>
+                {{/each }}
+            </ul>
+    </div> 
+  
+</template>
+
+<template name="quiz">
+        <div class="card">
+                <li class="list-group-item">
+                        <form class="form-inline">
+                                <div class="form-group mx-sm-3 mb-2">              
+                                <h5> In the past five years I have needed unexpected medicle treatment </h5>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                        <input type="checkbox" class="form-check-input" id="unexpectedMedicleTreatment">                                        
+                                </div>
+                        </form>
+                </li>
+                <li class="list-group-item">
+                        <form class="form-inline">
+                                <div class="form-group mx-sm-3 mb-2">              
+                                <h5> I am planning on becoming pregnant while living in my next locaton</h5>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                        <input type="checkbox" class="form-check-input" id="becommingPregnant">                                        
+                                </div>
+                        </form>
+                </li>
+                <li class="list-group-item">
+                        <form class="form-inline">
+                                <div class="form-group mx-sm-3 mb-2">              
+                                <h5> I typically have difficulty attending preschedualed medicle appointments</h5>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                        <input type="checkbox" class="form-check-input" id="difficultyAttendingAppointments">                                        
+                                </div>
+                        </form>
+                </li>
+                <li class="list-group-item">
+                        <form class="form-inline">
+                                <div class="form-group mx-sm-3 mb-2">              
+                                <h5> I am interest in a communnity with general health, such as physical activity, and low amounts of pollution </h5>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                        <input type="checkbox" class="form-check-input" id="interestInGeneralHealth">                                        
+                                </div>
+                        </form>
+                </li>
+                <li class="list-group-item">
+                        <form class="form-inline">
+                                <div class="form-group mx-sm-3 mb-2">              
+                                <h5> I am looking to recieve treatment from a drug treatment program</h5>
+                                </div>
+                                <div class="form-group mx-sm-3 mb-2">
+                                        <input type="checkbox" class="form-check-input" id="needDrugTreatmentProgram">                                        
+                                </div>
+                        </form>
+                </li>
+                <li class="list-group-item">                        
+                <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="body fat % (as a number)" id="bodyFat">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="age" id="age">
+                        </div>
+               </div>
+               </li>               
+        </div>
+        <br>
+        <div class="card">                
+        <button class="next btn btn-primary next"> generate my map!</button> 
+        </div>             
+        
+</template>
+
+
 

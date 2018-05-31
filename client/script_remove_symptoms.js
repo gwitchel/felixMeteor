@@ -1,28 +1,6 @@
 
-Template.quiz.events({
-    'click .next': function(){
-        var selectedConditions = Session.get('selectedCondition'); 
-        var links = []  
-        for(var i = 0; i < mapData.maps.length; i++){
-            if(typeof mapData.maps[i].relatedSymptoms !== 'undefined'){
-                if(checkSymptomsAgainstList(mapData.maps[i],selectedConditions[0]["text-list"][0].text["html"])){
-                    links.push(mapData.maps[i]);
-                }
-            }
-        }
-        debugger;
-        var quizLinks = returnLinksToMapsWithQuiz();
-        for(var i = 0; i < quizLinks.length; i++){
-            links.push(quizLinks[i]);
-        }
-        links = removeDoubles(links);
-        Session.set('linksToMap',links); 
-        Router.go("map2");
-    }
-})
-
-Template.enterData.events({
-    'click .next': function(){
+Template.removeSymptoms.events({
+    'click .showMap': function(){
         var selectedConditions = Session.get('selectedCondition'); 
         var links = []  
         for(var i = 0; i < mapData.maps.length; i++){
@@ -35,62 +13,31 @@ Template.enterData.events({
         Session.set('linksToMap',links); 
         Router.go("map2");
     },
-})
-Template.enterSymptomData.helpers({
-    returnDiseases() {
-        var c = Session.get('selectedCondition')
-        if(typeof c !== 'undefined'){
-            var conditionsToList = []; 
-            for(var i = 0; i < c.length;i++){
-                conditionsToList.push( 
-                    c[i].name);
-            }
-            return conditionsToList;
-        } else {
-            return;
-        }
-    }, 
-});
-Template.enterSymptomData.events({
-    'click .removeCondition': function(event){
-        var c = Session.get('selectedCondition');
+    'click .removeMap': function(event){
+        debugger
+        var c = Session.get('linksToMap');
         for(var i = 0; i < c.length; i++){
             if(c[i].name === event.currentTarget.id) c.splice(i,1);
         }
-        Session.set('selectedCondition',c)
-        //console.log(event.currentTarget.id);
-
+        Session.set('linksToMap',c) 
+        
     }
 });
-function returnLinksToMapsWithQuiz(){
-    var mapNames = []; 
-    if($("#unexpectedMedicleTreatment").is(':checked')) mapNames.push(getMapById(1),getMapById(3),getMapById(6));
-    if($("#becommingPregnant").is(':checked')) mapNames.push(getMapById(9),getMapById(11),getMapById(13),getMapById(15),getMapById(34));
-    if($("#difficultyAttendingAppointments").is(':checked')) mapNames.push(getMapById(5),getMapById(10),getMapById(12),getMapById(18),getMapById(20),getMapById(24));
-    if($("#interestInGeneralHealth").is(':checked')) mapNames.push(getMapById(13),getMapById(19),getMapById(29),getMapById(33),getMapById(35),getMapById(36),getMapById(30));
-    var bodyFat = $("#bodyFat").val();
-    var age = $("#age").val();
-    if(parseInt(bodyFat) > 37) mapNames.push(getMapById(18),getMapById(19),getMapById(24),getMapById(25),getMapById(26),getMapById(27),getMapById(29),getMapById(33),getMapById(36),getMapById(37));
-    if(parseInt(age) > 65) mapNames.push(getMapById(5),getMapById(10),getMapById(12),getMapById(18),getMapById(20),getMapById(24));
-    return mapNames; 
-}  
-function getMapById(id){
-    for(var i = 0; i < mapData.maps.length; i++){
-        if(mapData.maps[i].id === id) return mapData.maps[i];
+Template.removeSymptoms.helpers({
+    returnMapsWereDisplayingForSymptoms() {
+        var selectedConditions = Session.get('selectedCondition'); 
+        var maps = []  
+        for(var i = 0; i < mapData.maps.length; i++){
+            if(typeof mapData.maps[i].relatedSymptoms !== 'undefined'){
+                if(checkSymptomsAgainstList(mapData.maps[i],selectedConditions[0]["text-list"][0].text["html"])){
+                    maps.push(mapData.maps[i].name);
+                }
+            }
+        }
+        return maps; 
     }
-}
-function removeDoubles(listOfMaps){
-    debugger;
-    var ids = [];
-    var finalMaps = []; 
-    for(var i = 0; i < listOfMaps.length; i++){
-        ids.push(listOfMaps[i].id);
-    }
-    for(var i = 1; i < mapData.maps[mapData.maps.length-1].id + 1; i++){
-        if(listOfMaps.indexOf(getMapById(i)) !== -1 ) finalMaps.push(getMapById(i));
-    }
-    return finalMaps; 
-}
+})
+
 function checkSymptomsAgainstList(MD,TTLK){
     if(typeof MD.relatedSymptoms !== 'undefined'){
         for(var j = 0; j < MD.relatedSymptoms.length; j++){
@@ -105,7 +52,8 @@ var mapData = {
             "id": 1,
             "name":"Trauma Center Designation",
             "link": "https://opendata.arcgis.com/datasets/3d1927123c2b42baa710029c122ae21c_0.geojson",
-            "type":"point"                
+            "type":"point",
+            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"]            
         },
         {
             "id": 2,
@@ -182,7 +130,7 @@ var mapData = {
             "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
             "type":"range",
             "caller":"SMOKER",
-            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"
+            "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","Ectopic pregnancy","Orofacial clefts"
             ]
         },
         {
@@ -223,16 +171,14 @@ var mapData = {
             "name":"Mobility/Ambulatory Difficulty (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/6566b786e56b4101b3076305e0beff00_18.geojson",
             "type":"range",
-            "caller":"Disability_TCNPop_With_An_Ambulatory_Difficulty_Age_Over_4",
-            "relatedSymptoms" : ["joint", "swelling","movement","wheelchair", "arthritis","move","hypomobility"]
+            "caller":"Disability_TCNPop_With_An_Ambulatory_Difficulty_Age_Over_4"
         },
         {
             "id": 19,
             "name":"Obesity in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/d7f4afc451b5495d9984bd4a5d98b200_8.geojson",
             "type":"range",
-            "caller":"OBESE",
-            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
+            "caller":"OBESE"
         },
         {
             "id": 20,
@@ -246,25 +192,21 @@ var mapData = {
             "name":"Alcohol Consumption: Adults Who Binge Drink - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/b3e3108f65634da5a931a75793f65ab1_2.geojson",
             "type":"range",
-            "caller":"BINGED",
-            "relatedSymptoms" : ["alcoholism","addiction","seizures","cancer"]
+            "caller":"BINGED"
         },
         {
             "id": 22,
             "name":"Influenza Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/dd655a512f884f72a8fa03de2c0730a2_6.geojson",
             "type":"range",
-            "caller":"INFLUENZA_ADJRATE",
-            "relatedSymptoms" : ["Body or muscle aches", "Chills","Cough","Fever","Headache","Sore throat"]
-            
+            "caller":"INFLUENZA_ADJRATE"
         },
         {
             "id": 23,
             "name":"Asthma Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/3ca3d95062394449b245dab65e6d882d_0.geojson",
             "type":"range",
-            "caller":"ASTHMA_ADJRATE",
-            "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
+            "caller":"ASTHMA_ADJRATE"
         },
         {
             "id": 24,
@@ -278,33 +220,28 @@ var mapData = {
             "name":"Overweight and Obese Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/3702d9b48efb49a8870bf0e375ea3817_9.geojson",
             "type":"range",
-            "caller":"OWOBESE",
-            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
+            "caller":"OWOBESE"
         },
         {
             "id": 26,
             "name":"Diabetes in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/8f2dfdf3435e45929c1a391e03f214c9_5.geojson",
             "type":"range",
-            "caller":"DIAB",
-            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","pancreas"," beta cells", "insulin", "glucose","polyuria","polydipsia","hypoglycemia"]
+            "caller":"DIAB"
         },
         {
             "id": 27,
             "name":"Heart Disease Mortality Rate (Census Tracts)",
             "link":"https://opendata.arcgis.com/datasets/f1a592eef8384946b0ae64701bece065_5.geojson",
             "type":"range",
-            "caller":"HD_ADJRATE",
-            "relatedSymptoms" : ["heart","oxygen","blood","heart murmur","tachypnea","hypotension", "hypoxemia", "cyanosis","aorta","coarctation of the aorta","double-outlet right ventricle","D-transposition of the great arteries","Ebstein anomaly", "hypoplastic left heart syndrome", "interrupted aortic arch", "pulmonary atresia", "single ventricle", "total anomalous pulmonary venous connection", "tetralogy of Fallot", "tricuspid atresia", "truncus arteriosus"]          
+            "caller":"HD_ADJRATE"
         },
         {
             "id": 28,
             "name":"Asthma Prevalence in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/99d966b6ab75450c93569a3f112f3002_1.geojson",
             "type":"range",
-            "caller":"ASTHMA",
-            "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
-            
+            "caller":"ASTHMA"
         },
         {
             "id": 29,
@@ -325,17 +262,14 @@ var mapData = {
             "name":"Drug Poisoning or Overdose involving Rx Opioid Analgesic or Heroin Mortality Rate (Census Tract)",
             "link": "https://opendata.arcgis.com/datasets/4cb7534bb73341f4aa2f76b8069f2428_19.geojson",
             "type":"range",
-            "caller":"POD_DEATH_ADJRATE",
-            "relatedSymptoms" : ["addiction","overdose","Opioids","drug"]
-            
+            "caller":"POD_DEATH_ADJRATE"
         },
         {
             "id": 32,
             "name":"Hearing Difficulty (Census Tract)",
             "link":"https://opendata.arcgis.com/datasets/830436b761f24ee589216266feac5640_14.geojson",
             "type":"range",
-            "caller":"Disability_TCNPop_With_A_Hearing_Difficulty",
-            "relatedSymptoms" : ["Nonsyndromic","hearing","deafness","hearing loss","sensorineural"]            
+            "caller":"Disability_TCNPop_With_A_Hearing_Difficulty"
         },
         {
             "id": 33,
@@ -356,9 +290,7 @@ var mapData = {
             "name":"Mental Health in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/e81e76791f7f47e080f39aafd79516f8_7.geojson",
             "type":"range",
-            "caller":"MNTLD",
-            "relatedSymptoms" : ["mental","depression","Panic","Obsessive-compulsive","Post-traumatic stress","Phobias","Generalized anxiety disorder","Anxiety" , "panic","Bipolar","Depression","Mood","Personality","Psychotic"
-            ]                        
+            "caller":""
         },
         {
             "id": 36,
@@ -366,15 +298,13 @@ var mapData = {
             "link": "https://opendata.arcgis.com/datasets/b3a561e7cd584586a724aaff31bde04f_11.geojson",
             "type":"range",
             "caller":"POPOVER18"
-            
         },
         {
             "id": 37,
             "name":"Diabetes Hospitalization Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/9567507342654bb1bf8cfaaa3b498b3f_3.geojson",
             "type":"range",
-            "caller":"DIABETES_ADJRATE",
-            "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating","preeclampsia"]
+            "caller":"DIABETES_ADJRATE"
         },
         {
             "id": 38,
@@ -404,49 +334,3 @@ var mapData = {
         }
     ] 
 }
-
-// this ones special, add it if you have time: https://hub.arcgis.com/datasets/5878e60d6a714c5395fd934ec7f864e9_2
-
-/* var diseaseTable = [
-    {
-        "id": 1,
-        "name":"hypertension"
-    },
-    {
-        "id": 2,
-        "name":"high colestoral"
-    },
-    {
-        "id": 3,
-        "name":"arthritis"
-    },
-    {
-        "id": 4,
-        "name":"ischemic heart disease"
-    },
-    {
-        "id": 5,
-        "name":"diabetes"
-    },
-    {
-        "id": 6,
-        "name":"chronic kidney disease"
-    },
-    {
-        "id": 7,
-        "name":"heart failure"
-    },
-    {
-        "id": 8,
-        "name":"depression"
-    },
-    {
-        "id": 9,
-        "name":"alzhimers"
-    },
-    {
-        "id": 10,
-        "name":"obstructive pulminary disease"
-    }
-]
- */

@@ -19,15 +19,16 @@ if (Meteor.isClient) {
       return Session.get('serverDataResponse') || "";
     };
     Template.passData.events = {
-      'click input[type=button]' : function () {
-          Meteor.call('getData', $('input[type=text]').val(), function(err,response) {
+      'click .submitCondition' : function () {
+          debugger;
+          event.preventDefault();
+          Meteor.call('getData', $('input[type=input]').val(), function(err,response) {
               if(err) {
                   Session.set('serverDataResponse', "Error:" + err.reason);
                   return;
               }
               //console.log(response["text-list"][0].text["html"])
               console.log(response)
-              //console.log(symptoms(response["text-list"][0].text["html"]));
               if(typeof Session.get('selectedCondition') !== 'undefined'){
                   var x = Session.get('selectedCondition');
                   x.push(response); 

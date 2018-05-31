@@ -1,0 +1,10 @@
+<template name = "removeSymptoms">
+        <h6> Here are the maps we want to disply based on your needs</h6>
+        {{#each returnMapsWereDisplayingForSymptoms}} 
+        <tr> 
+        <td>{{this}}</td> 
+            <button class="removeMap" id = "{{this}}"> remove </button>
+        </tr>
+        {{/each }}
+        <button class="showMap">Show me my map</button>        
+</template>

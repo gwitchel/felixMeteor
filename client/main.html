@@ -1,3 +1,4 @@
+
 <template name="main">
   <!-- always displays the header!--> 
   <div class="container" style="margin-top:25px;">
@@ -8,17 +9,71 @@
     {{> footer}}
   </div>
 </template>
+
 <template name="intro">
   <body class="dark">
-  <!-- <img src="/images/intorduction.png"> !-->   
+  <!-- <img src="/images/intorduction.png">   
    <button clas="clck1"><a href = "{{pathFor route='aboutUs'}}" ><p class="subtitleOne dark ">more</p></a></button>
     <a href = "{{pathFor route='map2'}}" ><p class="subtitleOne light ">map</p></a>
     <a href = "{{pathFor route='getDiseaseData'}}" ><p class="subtitleOne dark ">disease</p></a>
-    <a href = "{{pathFor route='enterData'}}" ><p class="subtitleOne dark ">data</p></a>
-    
+    !--> 
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <main role="main" class="inner cover">
+          <h1 class="cover-heading">What we do</h1>
+          <p class="lead">Having a disability or a child with a disability can be one of the hardest part of life, especially if you don’t have the best access to resources. Felix helps users take power over their disability by giving them real time location analysis of resources designed to help them cope with their disease, enabling them to make more informed decisions about where to relocate</p>
+          <h1 class="cover-heading">Why we do it</h1>
+          <p class="lead">We believe that every person is valuable, and every person has to potential to do something great.  We also understand that there are many factors that dictate where a user can live. We want give users options in order to help themreach their full potential without being inhibited by their disabilitiy.</p>
+          <h1 class="cover-heading">How we do it</h1>
+          <p class="lead">Felix synthesizes different datasets and various APIs in order to create demographic heat maps demonstrating availability of different facilities and statistics relative to users needs. Data includes treatment facilities, general wellness data, accessibility and active community an support data. Because we understand that each disability is unique, Felix is customizable, allowing users to search and analyze factors specific to their needs and their needs  alone. 
+            </p>
+          <p class="lead">
+          </p>
+          <div class=" text-center">               
+          <button type="button" class="btn btn-outline-dark centered"><a href = "{{pathFor route='enterData'}}" >Lets Go!</a></button>          
+        </div>
+        </main>
+      </div>
   </body>
 </template>
 <template name="header">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <a class="navbar-brand" href="{{pathFor route='intro'}}">Felix</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item ">
+            <a class="nav-link active" href="{{pathFor route='enterData'}}"> map</a>
+          </li>
+          <li class="nav-item ">
+              <a class="nav-link" href="{{pathFor route='aboutUs'}}">about</a>
+            </li>
+        </ul>
+      </div>
+    </nav>
 </template>
-<template name="footer">
+<template name="footer">  
 </template>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom fonts for this template -->
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="vendor/simple-line-icons/css/simple-line-icons.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="device-mockups/device-mockups.min.css">
+    <!-- Custom styles for this template -->
+    <link href="css/new-age.min.css" rel="stylesheet">
+  </head>
+
+ 
