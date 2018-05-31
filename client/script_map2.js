@@ -25,17 +25,27 @@ Template.map2.helpers({
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
-    console.log(Session.get('selectedCondition'))
     var links = Session.get('linksToMap');    
     // get the links from the previouse page --> maybe see if you can do this with cookie data
     //var links = convertToMappingTables();
     var polyGonsToMap = [];
+    var colors = ["f48342","f4df41","94f441","41f4a0","f4415e","6b7a0b","ffffff","000000","7a1f0b"];
+    var colorTracker = 0; 
+    debugger;
     // maps the data to the map
     for(var i = 0; i < links.length; i++){
       var data = getData(links[i].link);
-      if(data.features[i].geometry.type == "Point") mapDot(getData(links[i].link),map.instance); 
+      if(data.features[i].geometry.type == "Point"){
+        mapDot(getData(links[i].link),map.instance,colors[colorTracker],links[i].caller); 
+        colorTracker++;
+      } 
       if(data.features[i].geometry.type == "Polygon") {
-        polyGonsToMap.push(new CombinationMap(data, links[i].caller));
+        if(links[i].subtype === "Counties"){
+          polyGonsToMap.push(new CombinationMap(data, links[i].caller,"COUNTY_NAME"));          
+        } 
+        if(links[i].subtype === "census"){
+          polyGonsToMap.push(new CombinationMap(data, links[i].caller,"COUNTY"));          
+        } 
         polyGonsToMap[0].map = polyGonsToMap[0].scaleMapFrom1to1000();
       };
     } 
@@ -46,7 +56,7 @@ Template.map2.onCreated(function() {
       for(var i = 1; i < polyGonsToMap.length; i++){
         var mapTwo = polyGonsToMap[i]; 
         mapTwo.map = mapTwo.scaleMapFrom1to1000();
-        mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller());
+        mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller(),mapTwo.subtype);
         mapOne.map = mapOne.scaleMapFrom1to1000(); 
 
       }
@@ -123,9 +133,7 @@ function getData(url){
     }
     return highest; 
   }
-  // uploades different colored dots for the map 
-  var image1 = "dot1.png";
-  var image2 = "dot2.png"
+  
   // maps a graph that is purely geometry, no other value data 
   mapSingleColorGraph = function(results,fillColor){
     // create all ofthe polygons and and set them to the graph 
@@ -168,17 +176,23 @@ function getData(url){
     }
   }
   // maps all of the point coordinates of a given data set 
-  mapDot = function(results, mapRef) {
-    console.log(results)
+  mapDot = function(results, mapRef,colorForPin,caller) {
+    var pinIcon = new google.maps.MarkerImage(
+      "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + colorForPin,
+      null, /* size is determined at runtime */
+      null, /* origin is 0,0 */
+      null, /* anchor is bottom center of the scaled image */
+      new google.maps.Size(12, 18)
+    );
     for (var i = 0; i < results.features.length; i++) {
       var coords = results.features[i].geometry.coordinates;
       var latLng = new google.maps.LatLng(coords[1],coords[0]);
       var marker = new google.maps.Marker({
         position: latLng,
         map: mapRef,
-        //icon: image
+        icon: pinIcon
       });
-      attachSecretMessage(marker, results.features[i].properties.HOSPITAL_NAME);      
+      attachSecretMessage(marker, results.features[i].properties[caller]);      
       function attachSecretMessage(marker, secretMessage) {
         var infowindow = new google.maps.InfoWindow({
           content: secretMessage
@@ -219,7 +233,7 @@ function getData(url){
           strokeWeight: 2,
           fillColor:  color, 
           fillOpacity: 0.75,
-          name : results.features[i].properties.COUNTY,
+          name : results.features[i].properties.caller,
           score: results.features[i].properties[scaleTerm]
           
         });
@@ -257,10 +271,11 @@ function getData(url){
     }
   }
   // object for any map that will be manipulated and not just drawn 
-  var CombinationMap = function(mapOne, caller){
+  var CombinationMap = function(mapOne, caller,subtype){
     // every variable that this map has been averaged with 
     this.trackers = [caller];
     // the map and it's prominent data set 
+    this.subtype = subtype
     this.map = mapOne; 
     this.firstCaller = caller; 
     // scales the map so that every map can be the same size 
@@ -275,13 +290,13 @@ function getData(url){
       return this.map; 
     }
     // combines one maps data with ontehr maps data 
-    this.combineWithOtherMap = function(otherMap,otherCaller){
+    this.combineWithOtherMap = function(otherMap,otherCaller,otherSubtype){
       // this assumes that the other map has been scaled from one to 1,000
       // be carefull of cencus and counties 
       this.trackers.push(otherCaller);
       for(var j = 0; j < this.map.features.length; j++){
         for(var i = 0; i < otherMap.features.length; i++){
-          if(this.map.features[j].properties.COUNTY == otherMap.features[i].properties.COUNTY){
+          if(this.map.features[j].properties[this.subtype] == otherMap.features[i].properties[otherSubtype]){
             this.map.features[j].properties[this.firstCaller] = (this.map.features[j].properties[this.firstCaller] + otherMap.features[i].properties[otherCaller])/2;
           }
         }
