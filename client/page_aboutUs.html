@@ -1,15 +1,60 @@
-<template name="aboutUs"> 
+<!-- A simple about us page, for baisic Q&A. non responsive!--> 
+<template name="aboutUs">     
         <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
                 <main role="main" class="inner cover">
                   <h1 class="cover-heading">What can felix be used for?</h1>
                   <p class="lead">Felix can be used to analyzing different communities based on their compatibility for your lifestyle and your needs. Users can enter different living requirements, ranging from  availability of 24 hour operating clinics, to disease statistics, or even just air quality, and will generate a heat map indicating hotspots compatible with the users requirements. </p>
                   <h1 class="cover-heading">Is my information safe?</h1>
-                  <p class="lead">We understand that not everyone is comfortable discussing their disabilities with the world. Because we don’t want to put users at risk, we made Chi 100% anonymous, meaning no user accounts, no emails, no spam, no names required.  Because doesn’t utilize user data, there should be no reason to store it, and no reason to put our users at risk for cyber attacks. </p>
-                  
+                  <p class="lead">We understand that not everyone is comfortable discussing their disabilities with the world. Because we don’t want to put users at risk, we made Felix 100% anonymous, meaning no user accounts, no emails, no spam, no names required.  Because doesn’t utilize user data, there should be no reason to store it, and no reason to put our users at risk for cyber attacks. If you're unsure about using Felix or have questions, try asking one of our team members for help.</p>
                   <p class="lead">
                   </p>
                   <div class=" text-center">               
                 </div>
                 </main>
             </div>
+            {{>ourTeam}}
+            <h1 class="cover-heading text-center">We wanted to use public data for more than saving buisnesses a few dollars, we wanted to use it to save lives.</h1>
+</template> 
+<!-- A simple meet the team page, for validity. non responsive!--> 
+<template name="ourTeam"> 
+    <h1 class="cover-heading text-center">our team</h1>    
+    <div class="row">
+        <div class="col-sm-4">
+            <img class="card-img-top" src="/images/kaitlyn.jpg" alt="Nicholas">                            
+            <div class="card">
+              <div class="card-body">
+                <h3 class="card-title">buisness and marketing</h3>
+                <p class="card-text">Kaitlyn Ashburn is the CMO of Felix.  Kaitlyn is excited to be a part of the Felix team and making an impact in public health. She has a passion for contributing to the lives of other in relation to making the access to medical facilities easier. She brings experience of promoting small businesses and social media advertising. In her free time, Kaitlyn enjoys reading, exploring, and competitively swimming. Fun fact: Kaitlyn has never watched a single movie by DC comics, but loves all things Marvel  </p>
+              </div>
+              <div class="card-footer text-muted text-center">
+                  You can reach kaitlyn at s.kaitlyna@durangoschools.org
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+              <div class="card">
+                <img class="card-img-top" src="/images/nicholas.jpg" alt="Nicholas">                
+                <div class="card-body">
+                  <h3 class="card-title">VR and compliance</h3>
+                  <p class="card-text">Nicholas Woodward is the head of VR and compliance.  Nicholas joined the team with his extensive skills in order to better prepare himself for a career in the field of programming.  He is experienced in graphic design and programming, VR technologies, and has previously developed two games.  In his free time, Nicholas enjoys playing violin and programming games.  Nicholas is eager to use his experiences to develop Felix into a more user-friendly program. Fun fact: Nicholas skipped two grades, and loves game jams.</p>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    You can reach Nicholas at s.nicholaswo@durangoschools.org
+                </div>
+              </div>
+              
+            </div>
+          <div class="col-sm-4">
+              <div class="card">
+                <img class="card-img-top" src="/images/georgia.jpg" alt="Nicholas">                                  
+                <div class="card-body">
+                  <h3 class="card-title">designer and developer</h3>
+                  <p class="card-text">Georgia Witchel is the founder and CEO of Felix.  Georgia was inspired to create Felix by the challenges of a friend struggling with depression who struggled to find a suitable living environment that was low-stress and had low suicide rates.  Georgia has work experience as a graphic designer, and web developer. She is excited to bring an innovative idea to the public to create change and make a positive impact on the world. Fun fact: Georgia love competitive mixed climbing, and is currently ranked fifth in the world. </p>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    You can reach Georgia at gmail@georgiawitchel.com
+                </div>
+              </div>
+            </div>
+      </div>
 </template> 

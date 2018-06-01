@@ -1,32 +1,49 @@
+<!-- main page in which user inputs their data, related scripts : disease.js, script_enterData.js, passData.js!--> 
+<!-- overall template which shows the two different subsections of customizing map !--> 
 <template name = "enterData">
-    {{>enterSymptomData}}
-    {{>quiz}}
+        <div class="card">
+                <div class="card-body">                  
+                        Start by adding a condition you experience. We’ll use symptoms and needs for this condition to generate you final map. 
+                </div>   
+        </div>  
+        <br>                 
+        {{>enterSymptomData}}
+        {{>quiz}}
 </template>
 
+<!-- allows user to input a condition and get it matched based on symptoms realting to maps!--> 
 <template name = "enterSymptomData">
-    <!-- <iframe src="https://ghr.nlm.nih.gov"></iframe> !-->
     <div class="card">
-        <div class="card-body"> 
+        <div class="card-body">
+        <!-- entry box for condition: see disease.html !-->  
             {{> passData}}
         </div>
             <ul class="list-group list-group-flush">
-                {{#each returnDiseases}} 
+                <!-- returns a list of conditions the user has already entered, along with a remove option id is the condition name!--> 
+                {{#each returnDiseases}}
                     <li class="list-group-item">
                         {{this}}
                         <button class="btn btn-outline-info btn-sm removeCondition" id = "{{this}}"> remove </button>
                     </li>
                 {{/each }}
+                <!-- If there was an error, show some explainations for how to do an exact search (goes away after condition is retreived correctely) !--> 
+                {{#if returnIsError}}
+                <li class="list-group-item">
+                    {{>explainationOne}}
+                </li> 
+                {{/if}}
             </ul>
     </div> 
-  
 </template>
 
+<!-- A quiz to add in point type data, like which hospitals the user prefers!--> 
 <template name="quiz">
         <div class="card">
+
                 <li class="list-group-item">
                         <form class="form-inline">
                                 <div class="form-group mx-sm-3 mb-2">              
-                                <h5> In the past five years I have needed unexpected medicle treatment </h5>
+                                <h5> In the past five years I have needed unexpected medical treatment </h5>
                                 </div>
                                 <div class="form-group mx-sm-3 mb-2">
                                         <input type="checkbox" class="form-check-input" id="unexpectedMedicleTreatment">                                        
@@ -36,7 +53,7 @@
                 <li class="list-group-item">
                         <form class="form-inline">
                                 <div class="form-group mx-sm-3 mb-2">              
-                                <h5> I am planning on becoming pregnant while living in my next locaton</h5>
+                                <h5> I am planning on becoming pregnant while living in my next location</h5>
                                 </div>
                                 <div class="form-group mx-sm-3 mb-2">
                                         <input type="checkbox" class="form-check-input" id="becommingPregnant">                                        
@@ -46,7 +63,7 @@
                 <li class="list-group-item">
                         <form class="form-inline">
                                 <div class="form-group mx-sm-3 mb-2">              
-                                <h5> I typically have difficulty attending preschedualed medicle appointments</h5>
+                                <h5> I typically have difficulty attending Prescheduled medical appointments</h5>
                                 </div>
                                 <div class="form-group mx-sm-3 mb-2">
                                         <input type="checkbox" class="form-check-input" id="difficultyAttendingAppointments">                                        
@@ -56,7 +73,7 @@
                 <li class="list-group-item">
                         <form class="form-inline">
                                 <div class="form-group mx-sm-3 mb-2">              
-                                <h5> I am interest in a communnity with general health, such as physical activity, and low amounts of pollution </h5>
+                                <h5> I am interest in a community with general health, such as physical activity, and low amounts of pollution </h5>
                                 </div>
                                 <div class="form-group mx-sm-3 mb-2">
                                         <input type="checkbox" class="form-check-input" id="interestInGeneralHealth">                                        
@@ -66,7 +83,7 @@
                 <li class="list-group-item">
                         <form class="form-inline">
                                 <div class="form-group mx-sm-3 mb-2">              
-                                <h5> I am looking to recieve treatment from a drug treatment program</h5>
+                                <h5> I am looking to receive treatment from a drug treatment program</h5>
                                 </div>
                                 <div class="form-group mx-sm-3 mb-2">
                                         <input type="checkbox" class="form-check-input" id="needDrugTreatmentProgram">                                        
@@ -82,13 +99,47 @@
                           <input type="text" class="form-control" placeholder="age" id="age">
                         </div>
                </div>
-               </li>               
+               </li> 
+               <div class="card-footer text-muted text-center">
+                        
+                     Filling out our questionnaire will help us determine facilities and more basic information specific to your needs 
+                </div>
+            
         </div>
         <br>
         <div class="card">                
         <button class="next btn btn-primary next"> generate my map!</button> 
-        </div>             
+        </div> 
+        <div class="card-footer text-muted text-center">
+                        Don't worry, we promise we'll keep this information secrete
+                    </div>              
         
+</template>
+
+<!-- the full explaination page for if the condition search went wrong external link leads to gene reference!--> 
+<template name="explainationOne">
+    <div class="card" >
+        <div class="card-body">
+            <h1 class="card-title">Oops! something went wrong.</h1>
+            <h4 class="card-title">Were sorry, but one of our search functions is still pretty buggy</h4>
+            <br>
+            <h5 class="card-subtitle mb-2 text-muted">We get all of our information from conditions from the National Library of Medicine’s gene reference. Unfortunately, our search function is a bit buggy when getting information from this site ( We promise we're working on it). If an entered condition doesn’t show up, or you get an internal server error, you can input the link to the genetics home reference for more foolproof searching. </h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                        <h4 class="card-subtitle mb-2 text-muted">Go to the National library of medicine’s <a href="https://ghr.nlm.nih.gov/condition/alzheimer-disease" target="_blank" class="card-link">Genetics Home Reference</a> and search for the condition you wish to enter </h4>                    
+                    <img class="card-img-top" src="/images/expt1.jpg" alt="nation library of medicine homepage">
+                </li>
+                <li class="list-group-item">
+                        <h4 class="card-subtitle mb-2 text-muted">copy the last part of the URL for the given condition </h4>                    
+                        <img class="card-img-top" src="/images/expt2.jpg" alt="nation library of medicine searchbar">
+                </li>
+                <li class="list-group-item">
+                        <h4 class="card-subtitle mb-2 text-muted"> Enter the last part of the URL to your condition into our search bar </h4>                    
+                            <img class="card-img-top" src="/images/expt3.jpg" alt="nation library of medicine searchbar">
+                </li> 
+            </ul>            
+        </div>
+    </div>
 </template>
 
 

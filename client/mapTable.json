@@ -1,3 +1,4 @@
+// overall map table for reference, copy is kept in script_enterData.js for actual use 
 {
     "maps": [
         {
@@ -69,7 +70,7 @@
             "name":"Self Care Difficulty (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/e084d34fcbec41488ddfd9fd84d08cef_17.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"Disability_Population_Total_Civilian_Noninstitutionalized"
         },
         {
@@ -77,7 +78,7 @@
             "name":"Low Weight Birth Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/6f782c21fb6c4eb69a71316dd2a7293e_8.geojson",
             "type":"range",
-            "subtype":"Counties",
+            "subtype":"COUNTY_NAME",
             "caller":"LWB_ADJRATE"
         },
         {
@@ -85,7 +86,7 @@
             "name":"No Regular Medical Checkup in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/0bff29614fba4cc8b3a36b56a61f8e69_13.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"NOCHCKUP"
         },
         {
@@ -93,7 +94,7 @@
             "name":"Cigarette Smoking in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"COUNTY",
             "caller":"SMOKER",
             "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"
             ]
@@ -103,7 +104,7 @@
             "name":"Alcohol Consumption in Adults: Heavy Drinking - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/f3119526b98a47f7bf1babf54c111c5d_6.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"HVYDRK",
             "relatedSymptoms": ["addiction","alchohol","aggression", "agitation","compulsive behavior", "self-destructive behavior", "lack of restraint"]
         },
@@ -112,7 +113,7 @@
             "name":"Suicide Mortality Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/1bd512211246436b83e9cb8377ba40b1_12.geojson",
             "type":"range",
-            "subtype":"Counties",
+            "subtype":"COUNTY_NAME",
             "caller":"SUICIDE_ADJRATE",
             "relatedSymptoms":["mental illness","depression","teenager", "alchohol", "Bipolar", "Borderline personality", "Drug use", "addiction","PTSD","Schizophrenia"]
 
@@ -122,7 +123,7 @@
             "name":"Influenza Hospitalization Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/6f7e3ea2e0f3452db685980e5621ed08_7.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"INFLUENZA_ADJRATE",
             "relatedSymptoms": ["runny nose"," nasal congestion","sneezing", "sore throat", "cough", "headache"]
         },
@@ -131,7 +132,7 @@
             "name":"Asthma Hospitalization Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/a176548521c546f0b9be512197d7d8f4_1.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"ASTHMA_ADJRATE",
             "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
         },
@@ -140,7 +141,7 @@
             "name":"Mobility/Ambulatory Difficulty (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/6566b786e56b4101b3076305e0beff00_18.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"Disability_TCNPop_With_An_Ambulatory_Difficulty_Age_Over_4",
             "relatedSymptoms" : ["joint", "swelling","movement","wheelchair", "arthritis","move","hypomobility"]
         },
@@ -149,7 +150,7 @@
             "name":"Obesity in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/d7f4afc451b5495d9984bd4a5d98b200_8.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"OBESE",
             "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
         },
@@ -158,7 +159,7 @@
             "name":"Delayed Medical Care in Adults ($) - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/927939a6c52145bebe2acfdd6c7fa97d_4.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"DELMCC"
         },
         {
@@ -166,7 +167,7 @@
             "name":"Alcohol Consumption: Adults Who Binge Drink - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/b3e3108f65634da5a931a75793f65ab1_2.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"BINGED",
             "relatedSymptoms" : ["alcoholism","addiction","seizures","cancer"]
         },
@@ -175,7 +176,7 @@
             "name":"Influenza Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/dd655a512f884f72a8fa03de2c0730a2_6.geojson",
             "type":"range",
-            "subtype":"Counties",
+            "subtype":"COUNTY_NAME",
             "caller":"INFLUENZA_ADJRATE",
             "relatedSymptoms" : ["Body or muscle aches", "Chills","Cough","Fever","Headache","Sore throat"]
             
@@ -185,7 +186,7 @@
             "name":"Asthma Hospitalization Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/3ca3d95062394449b245dab65e6d882d_0.geojson",
             "type":"range",
-            "subtype":"Counties",
+            "subtype":"COUNTY_NAME",
             "caller":"ASTHMA_ADJRATE",
             "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
         },
@@ -194,7 +195,7 @@
             "name":"Independent Living Difficulty (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/9eaebfa432f04eabb2e405a4f1256d68_19.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"Disability_TCNPop_With_A_Disability"
         },
         {
@@ -202,7 +203,7 @@
             "name":"Overweight and Obese Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/3702d9b48efb49a8870bf0e375ea3817_9.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"OWOBESE",
             "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating"]
         },
@@ -211,7 +212,7 @@
             "name":"Diabetes in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/8f2dfdf3435e45929c1a391e03f214c9_5.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"DIAB",
             "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","pancreas"," beta cells", "insulin", "glucose","polyuria","polydipsia","hypoglycemia"]
         },
@@ -220,7 +221,7 @@
             "name":"Heart Disease Mortality Rate (Census Tracts)",
             "link":"https://opendata.arcgis.com/datasets/f1a592eef8384946b0ae64701bece065_5.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"HD_ADJRATE",
             "relatedSymptoms" : ["heart","oxygen","blood","heart murmur","tachypnea","hypotension", "hypoxemia", "cyanosis","aorta","coarctation of the aorta","double-outlet right ventricle","D-transposition of the great arteries","Ebstein anomaly", "hypoplastic left heart syndrome", "interrupted aortic arch", "pulmonary atresia", "single ventricle", "total anomalous pulmonary venous connection", "tetralogy of Fallot", "tricuspid atresia", "truncus arteriosus"]          
         },
@@ -229,7 +230,7 @@
             "name":"Asthma Prevalence in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/99d966b6ab75450c93569a3f112f3002_1.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"ASTHMA",
             "relatedSymptoms" : ["breath","Wheezing","Coughing","Chest tightness","Shortness of breath"]
             
@@ -239,7 +240,7 @@
             "name":"Physical Health in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/a2ba9f872094417782f70fc65cde2f11_10.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"PHYSH"
         },
         {
@@ -247,7 +248,7 @@
             "name":"Motor Vehicle Accident Mortality Rate (Counties)",
             "link": "https://opendata.arcgis.com/datasets/953c4e17929646938c262374e2c2e014_10.geojson",
             "type":"range",
-            "subtype":"Counties",
+            "subtype":"COUNTY_NAME",
             "caller":"MVA_ADJRATE"
         },
         {
@@ -255,7 +256,7 @@
             "name":"Drug Poisoning or Overdose involving Rx Opioid Analgesic or Heroin Mortality Rate (Census Tract)",
             "link": "https://opendata.arcgis.com/datasets/4cb7534bb73341f4aa2f76b8069f2428_19.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"POD_DEATH_ADJRATE",
             "relatedSymptoms" : ["addiction","overdose","Opioids","drug"]
             
@@ -265,7 +266,7 @@
             "name":"Hearing Difficulty (Census Tract)",
             "link":"https://opendata.arcgis.com/datasets/830436b761f24ee589216266feac5640_14.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"Disability_TCNPop_With_A_Hearing_Difficulty",
             "relatedSymptoms" : ["Nonsyndromic","hearing","deafness","hearing loss","sensorineural"]            
         },
@@ -274,7 +275,7 @@
             "name":"Health Status in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/23ae398f235f471c8b482a67bdb6b141_12.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"POPOVER18"
         },
         {
@@ -282,7 +283,7 @@
             "name":"Low Weight Birth Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/7673fa687a7a43b29c2f602db4d33cd9_9.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"LWB_ADJRATE"
         },
         {
@@ -290,7 +291,7 @@
             "name":"Mental Health in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/e81e76791f7f47e080f39aafd79516f8_7.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"MNTLD",
             "relatedSymptoms" : ["mental","depression","Panic","Obsessive-compulsive","Post-traumatic stress","Phobias","Generalized anxiety disorder","Anxiety" , "panic","Bipolar","Depression","Mood","Personality","Psychotic"
             ]                        
@@ -300,7 +301,7 @@
             "name":"Physical Activity in Adults - CDPHE Community Level Estimates (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/b3a561e7cd584586a724aaff31bde04f_11.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"POPOVER18"
         },
         {
@@ -308,7 +309,7 @@
             "name":"Diabetes Hospitalization Rate (Census Tracts)",
             "link": "https://opendata.arcgis.com/datasets/9567507342654bb1bf8cfaaa3b498b3f_3.geojson",
             "type":"range",
-            "subtype":"census",
+            "subtype":"County",
             "caller":"DIABETES_ADJRATE",
             "relatedSymptoms" : ["weight","fat","leptin","hyperphagia","overating","binge eating","preeclampsia"]
         },

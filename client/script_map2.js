@@ -4,7 +4,7 @@ import './page_map2.html';
 // if meteor is running load up the google maps and insert the key 
 if (Meteor.isClient) {
   Meteor.startup(function() {
-    GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});
+    GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});// loads google maps key
   });
 }
 // uplods the data 
@@ -27,85 +27,49 @@ Template.map2.onCreated(function() {
   GoogleMaps.ready('exampleMap', function(map) {
     var links = Session.get('linksToMap');    
     // get the links from the previouse page --> maybe see if you can do this with cookie data
-    //var links = convertToMappingTables();
     var polyGonsToMap = [];
     var colors = ["f48342","f4df41","94f441","41f4a0","f4415e","6b7a0b","ffffff","000000","7a1f0b"];
     var colorTracker = 0; 
-    debugger;
     // maps the data to the map
     for(var i = 0; i < links.length; i++){
-      var data = getData(links[i].link);
-      if(data.features[i].geometry.type == "Point"){
-        mapDot(getData(links[i].link),map.instance,colors[colorTracker],links[i].caller); 
+      var data = getData(links[i].link); // gets all the data from the CDPHE 
+      if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
+        mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
         colorTracker++;
       } 
-      if(data.features[i].geometry.type == "Polygon") {
-        if(links[i].subtype === "Counties"){
-          polyGonsToMap.push(new CombinationMap(data, links[i].caller,"COUNTY_NAME"));          
-        } 
-        if(links[i].subtype === "census"){
-          polyGonsToMap.push(new CombinationMap(data, links[i].caller,"COUNTY"));          
-        } 
-        polyGonsToMap[0].map = polyGonsToMap[0].scaleMapFrom1to1000();
+      if(data.features[i].geometry.type == "Polygon") { // if it's a polygon with a number make a list 
+          polyGonsToMap.push(new CombinationMap(data, links[i].caller,links[i].subtype));          
       };
     } 
+    // take a list of polygons with seperate score clean, scale, and average all of them. 
     var mapOne;
-    if(polyGonsToMap.length > 1){
-      mapOne = polyGonsToMap[0];
+    if(polyGonsToMap.length >= 1){
+      debugger;
+      mapOne = polyGonsToMap[0]; 
+      mapOne.map = mapOne.removeOutliers(mapOne.map, mapOne.firstCaller);         
+      mapOne.map = mapOne.scaleMapFrom1to1000();
       //mapOne.map = mapOne.scaleMapFrom1to1000();
       for(var i = 1; i < polyGonsToMap.length; i++){
         var mapTwo = polyGonsToMap[i]; 
+        mapTwo.map = mapTwo.removeOutliers(mapTwo.map, mapTwo.firstCaller);        
         mapTwo.map = mapTwo.scaleMapFrom1to1000();
-        mapOne.map = mapOne.combineWithOtherMap(mapTwo.returnMap(), mapTwo.returnCaller(),mapTwo.subtype);
+        mapOne.map = mapOne.combineWithOtherMap(mapTwo.map, mapTwo.firstCaller,mapTwo.subtype);
         mapOne.map = mapOne.scaleMapFrom1to1000(); 
 
       }
-      //console.log(rank(mapOne.returnMap(),mapOne.returnCaller()))
-      mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance); 
+      // map the composite map
+      mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance,mapOne.subtype); 
     } 
   });
 });
-// returns data from a database
+// does a number exist in an array?
 function doesAlreadyExist(arr, num){
   for(var m = 0; m < arr.length; m++){
     if(arr[m] == num) return true; 
   }
   return false; 
 }
-function convertToMappingTables(){
-  // get the diseases 
-  var toMap = Diseases.find({}).fetch(); 
-  var mappy = []; 
-  // put each array into a big array
-  for(var i = 0; i < toMap.length; i++){
-    mappy.push(toMap[i].id);
-  }
-  //remove elements from the array
-  var linksToMapsNeed = [];
-  for(var i = 0; i < mapToDisease.length; i++){
-    for(var j = 0; j < mappy.length; j++){
-      if(mapToDisease[i].diseaseID == parseInt(mappy[j])) linksToMapsNeed.push(mapToDisease[i].linkedMapsId)
-    }
-  }
-  // remove doubles
-  var n = []; 
-  for(var i = 0; i < linksToMapsNeed.length; i++){
-    for(var j = 0; j < linksToMapsNeed[i].length; j++){
-      if(!doesAlreadyExist(n, linksToMapsNeed[i][j])) n.push(linksToMapsNeed[i][j]);
-    }
-  }
-  // add in the corrolative table object 
-  linksToMapsNeed = n;
-  n = [] 
-  for(var i = 0; i < linksToMapsNeed.length; i++){
-    for(var j = 0; j < mapTable.length; j++){
-      if (linksToMapsNeed[i] === mapTable[j].id) n.push(mapTable[j]); 
-    }
-  }
-  linksToMapsNeed = n; 
-  // return the tables
-  return linksToMapsNeed;
-}
+//gets data based on a url
 function getData(url){  
   var x = ""
   var request = new XMLHttpRequest(); 
@@ -135,6 +99,7 @@ function getData(url){
   }
   
   // maps a graph that is purely geometry, no other value data 
+  // not currentely used but will be implimented
   mapSingleColorGraph = function(results,fillColor){
     // create all ofthe polygons and and set them to the graph 
     for(var i = 0; i < results.features.length; i++){
@@ -177,6 +142,7 @@ function getData(url){
   }
   // maps all of the point coordinates of a given data set 
   mapDot = function(results, mapRef,colorForPin,caller) {
+    // gets the pin icon form google chart APIS, assigns it a given color
     var pinIcon = new google.maps.MarkerImage(
       "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + colorForPin,
       null, /* size is determined at runtime */
@@ -184,6 +150,7 @@ function getData(url){
       null, /* anchor is bottom center of the scaled image */
       new google.maps.Size(12, 18)
     );
+    // makes a marker for each map element
     for (var i = 0; i < results.features.length; i++) {
       var coords = results.features[i].geometry.coordinates;
       var latLng = new google.maps.LatLng(coords[1],coords[0]);
@@ -192,24 +159,25 @@ function getData(url){
         map: mapRef,
         icon: pinIcon
       });
+      // assigns the marker a click button to display the name
       attachSecretMessage(marker, results.features[i].properties[caller]);      
       function attachSecretMessage(marker, secretMessage) {
         var infowindow = new google.maps.InfoWindow({
           content: secretMessage
         });
-      
         marker.addListener('click', function() {
           infowindow.open(marker.get('map'), marker);
         });
       }
     }
   }
-  // takes a map and displays in on the screen 
-  mapGraph = function(results,scaleTerm,mapRef) {
+  // takes a map and displays in on the screen along with it's county and composite score.
+  mapGraph = function(results,scaleTerm,mapRef,countyId) {
+    // sets the info window to the county name and score
     function showArrays(event) {
       var contentString = '<b>'+ '</b><br>' +
           'county: ' + this.name +
-          '<br>' + 'composite score ' + this.score;
+          '<br>' + 'score ' + this.score;
       // Replace the info window's content and position.
       infoWindow.setContent(contentString);
       infoWindow.setPosition(event.latLng);
@@ -233,7 +201,7 @@ function getData(url){
           strokeWeight: 2,
           fillColor:  color, 
           fillOpacity: 0.75,
-          name : results.features[i].properties.caller,
+          name : results.features[i].properties[countyId],
           score: results.features[i].properties[scaleTerm]
           
         });
@@ -259,7 +227,7 @@ function getData(url){
             strokeWeight: 2,
             fillColor:  color, 
             fillOpacity: 0.75,
-            name: results.features[i].properties.COUNTY,
+            name: results.features[i].properties.COUNTY, 
             score: results.features[i].properties[scaleTerm]
           });
           poly.setMap(mapRef);
@@ -304,21 +272,26 @@ function getData(url){
       return this.map; 
     }
     this.removeOutliers = function(results,keyWord){
+      // return a map with outliers removes so it's no skewed. 
       this.dataList = []; 
       for(var i = 0; i < results.features.length; i++){
         this.dataList.push(results.features[i].properties[keyWord])
       }
-      var newData = this.filterOutlier(this.dataList,"filteredValues");
+      var newData = this.filterOutlier(this.dataList,"filteredValues"); // filters outliers and returns a list of new fitted values
       for(var i = 0; i < this.dataList.length; i++){
-        if(this.dataList[i] > this.filterOutlier(this.dataList,0)) this.dataList[i] = this.filterOutlier(this.dataList,0);
-        if(this.dataList[i] < this.filterOutlier(this.dataList,1)) this.dataList[i] = this.filterOutlier(this.dataList,1);              
+        if(this.dataList[i] > this.filterOutlier(this.dataList,0)) this.dataList[i] = this.filterOutlier(this.dataList,0); // gets the maximum within the standard deviation
+        if(this.dataList[i] < this.filterOutlier(this.dataList,1)) this.dataList[i] = this.filterOutlier(this.dataList,1); // gets the minimum within the standard deviation
       }
       for(var i = 0; i < results.features.length; i++){
         results.features[i].properties[keyWord] = this.dataList[i]; 
       }
-      return results; 
+      return results; // returns a new list with values capped at the edges of the standard deviation 
     }
     this.filterOutlier = function(someArray,whatToReturn){
+      //key 
+      // 1 --> return the minimum of the standard deviation
+      // 0 --> return the maximum of the standard deviation 
+      // anything else --> return all values within standard deviation of an array of numbers
       var values = someArray.concat();
           // Then sort
           values.sort( function(a, b) {
@@ -333,11 +306,11 @@ function getData(url){
           var minValue = q1 - iqr*1.5;
           if(whatToReturn == 0) return maxValue; 
           if(whatToReturn == 1)return minValue; 
-          // // Then filter anything beyond or beneath these values.
-          // var filteredValues = values.filter(function(x) {
-          //     return (x <= maxValue) && (x >= minValue);
-          // });
-          //return filteredValues;
+          //  Then filter anything beyond or beneath these values.
+          var filteredValues = values.filter(function(x) {
+              return (x <= maxValue) && (x >= minValue);
+          });
+          return filteredValues;
     }
     // some returns to be used in drawings 
     this.returnMap = function(){
@@ -355,29 +328,6 @@ function getData(url){
     }
     return hex;
   };
-
-  function rank(mappy, term,county){
-    function findlow(map, term){
-      var lowest = map.features[0] 
-      for(var i = 0; i < map.features.length; i++){
-        if(lowest.properties[term] > map.features[i].properties[term]) lowest = map.features[i];
-      }
-      return lowest; 
-    }
-    var rank = []; 
-    var mapref = mappy; 
-    for(var i = 0; i < mapref.features.length; i++){
-      var lowest = findlow(mapref, term);
-      rank.push(lowest);
-      for(var j = 0; j <mapref.features.length; j++){
-        if(mapref.features[j].properties[this.firstCaller] = lowest.properties[this.firstCaller]) mapref = mapref.splice(1,1)
-      }
-    }
-    for(var i = 0; i < rank.length; i++){
-      if(rank[i].features[j].properties.COUNTY === county ) return i 
-    }
-    return rank
-  }
   //scales a given number to a value between 0 and 355 then turns it to a hex. Need bounds to scale 
   function getColor(val,lowerLim, uppperLim){
     var setZero = uppperLim - lowerLim;
@@ -388,26 +338,4 @@ function getData(url){
     color2 = rgbToHex(color2)
     return "#" + color2  + "00" + color; 
   }
-  // if it's a cencus, just average all the values of cencuses in the same county. 
-  function makeCencusIntoCounty(results,varSearch){
-    for(var i = 0; i < results.features.length; i++) {
-      var county = results.features[i].properties.COUNTY;
-      var sameCountyNums = []
-      for(var j = 0; j < results.features.length; j++){
-        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) sameCountyNums.push(results.features[j].properties.varSearch);
-      }
-      var avgNumb = avgNum(sameCountyNums); 
-      for(var j = 0; j < results.features.length; j++){
-        if(results.features[j].properties.COUNTY === results.features[i].properties.COUNTY) results.features[j].properties.varSearch = avgNumb;
-      }
-    }
-    return results; 
-  }
-  // averages an array of numbers 
-  function avgNum(nums){
-    var total = 0;
-    for(var i = 0; i < nums.length; i++){
-      total+=i; 
-    }
-    return total/nums.length; 
-  }
+  

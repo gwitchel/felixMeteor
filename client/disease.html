@@ -1,14 +1,9 @@
-
-
+<!-- displays the pass data form !--> 
 <template name="getDiseaseData">
     {{> passData}}
   </template>
-  
-  <template name="simple">
-    <input type="button" value="Call" />
-    <div id="simpleResult">{{result}}</div>
-  </template>
-  
+  <!-- lets the user enter a condition and returns the related maps based on symptoms gotten from an API!--> 
+  <!-- related scripts: passData.js && disease.js !--> 
   <template name="passData">
       <form class="form-inline">
           <div class="form-group mx-sm-3 mb-2">              
@@ -17,7 +12,6 @@
           <div class="form-group mx-sm-3 mb-2">
               <input type="input" class="form-control" placeholder="Enter condition"/>              
           </div>
-          <button class="btn btn-primary submitCondition">Submit</button>          
+          <button class="btn btn-primary submitCondition">Submit</button>
       </form>
-    <div id="passDataResult">{{result}}</div>
   </template>
