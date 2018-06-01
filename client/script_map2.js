@@ -7,7 +7,7 @@ if (Meteor.isClient) {
     GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});// loads google maps key
   });
 }
-// uplods the data 
+// uploads the data 
 Template.map2.helpers({
   exampleMapOptions: function() {
     // Make sure the maps API has loaded
@@ -26,25 +26,28 @@ Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
     var links = Session.get('linksToMap');    
-    // get the links from the previouse page --> maybe see if you can do this with cookie data
+    // get the links from the previous page --> maybe see if you can do this with cookie data
     var polyGonsToMap = [];
     var colors = ["f48342","f4df41","94f441","41f4a0","f4415e","6b7a0b","ffffff","000000","7a1f0b"];
     var colorTracker = 0; 
     // maps the data to the map
     for(var i = 0; i < links.length; i++){
-      var data = getData(links[i].link); // gets all the data from the CDPHE 
-      if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
-        mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
-        colorTracker++;
-      } 
-      if(data.features[i].geometry.type == "Polygon") { // if it's a polygon with a number make a list 
-          polyGonsToMap.push(new CombinationMap(data, links[i].caller,links[i].subtype));          
-      };
-    } 
+      try {
+        var data = getData(links[i].link); // gets all the data from the CDPHE 
+        if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
+          mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
+          colorTracker++;
+        } 
+        if(data.features[i].geometry.type == "Polygon") { // if it's a polygon with a number make a list 
+            polyGonsToMap.push(new CombinationMap(data, links[i].caller,links[i].subtype));          
+        };  
+      } catch (error) {
+        console.log(error)
+      }
+    }
     // take a list of polygons with seperate score clean, scale, and average all of them. 
     var mapOne;
     if(polyGonsToMap.length >= 1){
-      debugger;
       mapOne = polyGonsToMap[0]; 
       mapOne.map = mapOne.removeOutliers(mapOne.map, mapOne.firstCaller);         
       mapOne.map = mapOne.scaleMapFrom1to1000();
@@ -59,7 +62,9 @@ Template.map2.onCreated(function() {
       }
       // map the composite map
       mapGraph(mapOne.returnMap(),mapOne.returnCaller(),map.instance,mapOne.subtype); 
-    } 
+    }
+    // Hide spinner
+    $(".spinner").css('visibility', 'hidden');
   });
 });
 // does a number exist in an array?
