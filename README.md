@@ -10,3 +10,10 @@ USAGE:
     1. enter in a condition you would like to map for 
     2. fill out the survey 
     3. enjoy your map
+
+TO PUSH TO HEROKU:
+    https://medium.com/@leonardykris/how-to-run-a-meteor-js-application-on-heroku-in-10-steps-7aceb12de234
+
+    git push heroku master
+
+    Live site on Heroku:  https://felixmeteor.herokuapp.com
