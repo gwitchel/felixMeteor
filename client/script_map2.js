@@ -47,6 +47,7 @@ Template.map2.onCreated(function() {
         if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
           mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
           mapKey = mapKey + "The " + keyColors[colorTracker] + " marker represents: " + links[i].name + ". "          
+          mapKey = mapKey + "The " + keyColors[colorTracker] + " marker represents: " + links[i].name + ". "          
           colorTracker++;
         } 
         if(data.features[i].geometry.type == "Polygon") { // if it's a polygon with a number make a list 

@@ -10,6 +10,10 @@
       <div class="map-container">
         {{> googleMap name="exampleMap" options=exampleMapOptions key="AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI"}}
       </div>
+
+      <div class="spinner"></div> 
+      {{>displayKey}}     
+
       <div class="spinner"></div> 
       {{>displayKey}}     
 <style>
@@ -30,6 +34,7 @@
   border-top:6px solid rgba(0,174,239,.8);
   border-radius:100%;
 }
+
 @-webkit-keyframes rotation {
   from {-webkit-transform: rotate(0deg);}
   to {-webkit-transform: rotate(359deg);}
