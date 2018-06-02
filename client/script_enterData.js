@@ -28,7 +28,7 @@ Template.quiz.events({
 
 Template.enterSymptomData.helpers({
     returnDiseases() {
-        // retruns a list of conditions that should be shown because the user selected them
+        // Returns a list of conditions that should be shown because the user selected them
         var c = Session.get('selectedCondition')
         if(typeof c !== 'undefined'){
             var conditionsToList = []; 

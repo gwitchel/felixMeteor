@@ -46,7 +46,10 @@ Template.map2.onCreated(function() {
         var data = getData(links[i].link); // gets all the data from the CDPHE 
         if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
           mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
+<<<<<<< HEAD
           mapKey = mapKey + "The " + keyColors[colorTracker] + " marker represents: " + links[i].name + ". "          
+=======
+>>>>>>> 3fc525e53b8a96e60ce1adf001a9f82f10309632
           colorTracker++;
         } 
         if(data.features[i].geometry.type == "Polygon") { // if it's a polygon with a number make a list 
