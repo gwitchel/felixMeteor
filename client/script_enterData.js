@@ -67,6 +67,7 @@ function returnLinksToMapsWithQuiz(){
     if($("#becommingPregnant").is(':checked')) mapNames.push(getMapById(9),getMapById(11),getMapById(13),getMapById(15),getMapById(34));
     if($("#difficultyAttendingAppointments").is(':checked')) mapNames.push(getMapById(5),getMapById(10),getMapById(12),getMapById(18),getMapById(20),getMapById(24));
     if($("#interestInGeneralHealth").is(':checked')) mapNames.push(getMapById(13),getMapById(19),getMapById(29),getMapById(33),getMapById(35),getMapById(36),getMapById(30));
+    if($("#needDrugTreatmentProgram").is(':checked')) mapNames.push(getMapById(2));    
     var bodyFat = $("#bodyFat").val();
     var age = $("#age").val();
     if(parseInt(bodyFat) > 37) mapNames.push(getMapById(18),getMapById(19),getMapById(24),getMapById(25),getMapById(26),getMapById(27),getMapById(29),getMapById(33),getMapById(36),getMapById(37));

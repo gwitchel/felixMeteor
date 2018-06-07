@@ -3,6 +3,9 @@
 <template name= "displayKey">
     <button class="disp">key</button>
 </template>
+<template name= "toggleVr">
+    <a class="btn btn-info" href="{{pathFor route='qrCode'}}" role="button">view in VR</a>
+</template>
 
 <!-- Displays the final map in terms of a google map API, related scripts: script_map2.js!--> 
 <template name="map2">
@@ -12,7 +15,9 @@
       </div>
 
       <div class="spinner"></div> 
-      {{>displayKey}}     
+      {{>displayKey}}  
+      {{>toggleVr}}
+         
 <style>
 .spinner {
   position: absolute;
@@ -49,5 +54,5 @@
   to {transform: rotate(359deg);}
 }
 </style>
-  </body>
+</body>
 </template>

@@ -10,7 +10,7 @@ Template.displayKey.events({
     window.alert(mapKey + "the lower the composite score of a county the more compatible it is. In other words: Blue is good, red is bad. ")
   }, 
 });
-// if meteor is running load up the google maps and insert the key 
+// if metsor is running load up the google maps and insert the key 
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load({key: 'AIzaSyCeW_dpmqryHSJ-95XXoapZRa_OzFGDRRI'});// loads google maps key
@@ -34,8 +34,21 @@ Template.map2.helpers({
 Template.map2.onCreated(function() {
   // We can use the `ready` callback to interact with the map API once the map is ready.
   GoogleMaps.ready('exampleMap', function(map) {
-    var links = Session.get('linksToMap');    
-    // get the links from the previous page --> maybe see if you can do this with cookie data
+    var links = Session.get('linksToMap');  
+  //   var links = [ {
+  //     "id": 13,
+  //     "name":"Cigarette Smoking in Adults - CDPHE Community Level Estimates (Census Tracts)",
+  //     "link": "https://opendata.arcgis.com/datasets/37f465fabfaa4e5db52fdd1ec8d72203_0.geojson",
+  //     "type":"range",
+  //     "subtype":"COUNTY",
+  //     "caller":"SMOKER",
+  //     "relatedSymptoms": ["cancer","cough","breath","smoke","heart","arteries","cardiovascular","blood","stroke","bladder","cervix","colon","Esophagus","Kidney","Larynx","Liver","Oropharynx","Pancreas","Stomach","Trachea","Preterm","Stillbirth","Low birth weight","pregnancy","Orofacial clefts"
+  //     ]
+  // }]      
+    // get the links from the previous page
+    var mapNamesQRcode = [];
+    var mapDotsQRcodeResults = [];
+    var mapDotsQRcodeIdentities = [];   
     var polyGonsToMap = [];
     var colors = ["f48342","f4df41","94f441","41f4a0","f4415e","6b7a0b","ffffff","000000","7a1f0b"];
     var keyColors = ["orange","yellow","bright green","mint green","pink","tree green","white","black","dark brick"];    
@@ -44,7 +57,11 @@ Template.map2.onCreated(function() {
     for(var i = 0; i < links.length; i++){
       try {
         var data = getData(links[i].link); // gets all the data from the CDPHE 
+        mapNamesQRcode.push(links[i].name)
+   
         if(data.features[i].geometry.type == "Point"){ // if it's a point give it a color and put it on the map
+          mapDotsQRcodeResults.push(data) 
+          mapDotsQRcodeIdentities.push(links[i].name) 
           mapDot(getData(links[i].link),map.instance,colors[colorTracker], links[i].caller); 
           mapKey = mapKey + "The " + keyColors[colorTracker] + " marker represents: " + links[i].name + ". "  // inserts stirng information to be displayed in the key.         
           colorTracker++;
@@ -56,6 +73,11 @@ Template.map2.onCreated(function() {
         console.log(error)
       }
     }
+    debugger;
+    Session.set('codeName', mapNamesQRcode);
+    Session.set('codeResults', mapDotsQRcodeResults);  
+    Session.set('codeResults2', mapDotsQRcodeIdentities);    
+    
     // take a list of polygons with seperate score clean, scale, and average all of them. 
     var mapOne;
     if(polyGonsToMap.length >= 1){
@@ -354,3 +376,4 @@ function getData(url){
     color2 = rgbToHex(color2)
     return "#" + color2  + "00" + color; 
   }
+

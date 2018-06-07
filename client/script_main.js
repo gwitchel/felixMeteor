@@ -31,6 +31,9 @@ Router.route('/intro',{
 Router.route('/disease',{
   name: 'getDiseaseData' // allows user to get disease data
 })
+Router.route('/script_qrCode',{
+  name: 'qrCode' // allows user to get disease data
+})
 Router.route('/page_enter_data',{
   name: 'enterData' // allows user to enter conditions
 })
